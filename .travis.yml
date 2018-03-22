@@ -18,6 +18,7 @@ install:
   - conda install -q pytest-cov
   - pip install -q flake8 coveralls
   - pip install -q https://github.com/qiime2/q2lint/archive/master.zip
+  - pip install -q https://github.com/biocore/redbiom/archive/v0.1.1.zip
   - make install
 script:
   - make lint
