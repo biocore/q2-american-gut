@@ -6,10 +6,10 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 from ._version import get_versions
-
+from ._fetch import fetch_amplicon
 
 __version__ = get_versions()['version']
 del get_versions
 
 
-__all__ = []
+__all__ = ['fetch_amplicon']
