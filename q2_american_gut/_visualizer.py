@@ -30,7 +30,6 @@ def report(output_dir: str,
            samples: list) -> None:
 
     index = os.path.join(TEMPLATES, 'report', 'index.html')
-    print('hello from the other side ' + index)
     q2templates.render(index, output_dir, context={'name': 'foo'})
 
     # Copy assets for rendering figure
