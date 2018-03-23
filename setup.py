@@ -26,5 +26,7 @@ setup(
     entry_points={
         'qiime2.plugins': ['q2-american-gut=q2_american_gut.plugin_setup:plugin']
     },
+    package_data={'q2_taxa': ['assets/report/index.html',
+                              'assets/report/resources/*']},
     zip_safe=False,
 )
