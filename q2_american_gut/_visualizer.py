@@ -28,6 +28,7 @@ def report(output_dir: str,
            table: biom.Table,
            taxonomy: pd.Series,
            samples: list) -> None:
+    metadata = metadata.to_dataframe()
 
     _insanity_checker(samples, metadata, table, alpha, pcoa)
 
