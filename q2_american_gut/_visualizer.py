@@ -29,9 +29,24 @@ def report(output_dir: str,
            taxonomy: pd.Series,
            samples: list) -> None:
 
+    _insanity_checker(samples, metadata, table, alpha, pcoa)
+
     index = os.path.join(TEMPLATES, 'report', 'index.html')
     q2templates.render(index, output_dir, context={'name': 'foo'})
 
     # Copy assets for rendering figure
     shutil.copytree(os.path.join(TEMPLATES, 'report', 'resources'),
                     os.path.join(output_dir, 'resources'))
+
+def _insanity_checker(samples, metadata, table, alpha, pcoa):
+    samples = set(samples)
+
+    if not samples.issubset(set(metadata.index)):
+        raise ValueError('There are missing samples in the metadata')
+    if not samples.issubset(set(table.ids('sample'))):
+        raise ValueError('There are missing samples in the BIOM table')
+    if not samples.issubset(alpha.index):
+        raise ValueError('There are missing samples in the alpha diversity '
+                         'vector')
+    if not samples.issubset(set(pcoa.samples.index)):
+        raise ValueError('There are missing samples in the ordination')
