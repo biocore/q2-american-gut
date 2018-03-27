@@ -54,13 +54,13 @@ plugin.methods.register_function(
     outputs=[
         ('feature_table', FeatureTable[Frequency]),
         ('feature_taxonomy', FeatureData[Taxonomy]),
-        ('sample_metadata', Metadata),
+        #('sample_metadata', Metadata),
         ('phylogeny', Phylogeny[Rooted])
     ],
     output_descriptions={
         'feature_table': "A feature table of the sample data",
         'feature_taxonomy': "Feature taxonomy information",
-        'sample_metadata': "Feature metadata",
+        #'sample_metadata': "Feature metadata",
         'phylogeny': "A phylogeny relating the features"
     }
 )
