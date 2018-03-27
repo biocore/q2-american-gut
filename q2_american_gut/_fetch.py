@@ -11,9 +11,9 @@ import pandas as pd
 import skbio
 
 
-def fetch_amplicon(qiita_study_id: int, processing_type: str, trim_length: int,
+def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
                    threads: int=1, debug: bool=False) -> (biom.Table,
                                                           pd.DataFrame,
-#                                                          pd.DataFrame,
+                                                          pd.DataFrame,
                                                           skbio.TreeNode):
     pass

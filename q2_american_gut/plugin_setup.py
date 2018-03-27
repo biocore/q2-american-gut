@@ -37,7 +37,7 @@ plugin.methods.register_function(
     inputs={},
     input_descriptions={},
     parameters={
-        'qiita_study_id': Int % Range(1, None),
+        'qiita_study_id': Str,
         'processing_type': Str % Choices(['deblur', 'closed-reference']),
         'trim_length': Str % Choices(['90', '100', '150']),
         'threads': Int,

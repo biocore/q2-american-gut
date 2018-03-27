@@ -1,0 +1,5 @@
+#SampleID	foo	bar	baz
+123.456.789	x	y	1.0
+123.456.012	thing	0	2.3
+123.xxx.789		stuff	None
+321.xxx.789		stuff	None
