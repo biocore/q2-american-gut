@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# Copyright (c) 2016-2018, QIIME 2 development team.
+# Copyright (c) 2012-2018, American Gut Project development team.
 #
 # Distributed under the terms of the Modified BSD License.
 #
