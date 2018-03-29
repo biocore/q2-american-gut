@@ -10,8 +10,11 @@
 import unittest
 import shutil
 
-from q2_american_gut import QiitaMetadata, QiitaMetadataDirectoryFormat,\
-                                QiitaMetadataFormat
+#from q2_american_gut import QiitaMetadata, QiitaMetadataDirectoryFormat,\
+#                                QiitaMetadataFormat
+from q2_american_gut._format import QiitaMetadataFormat, \
+                                    QiitaMetadataDirectoryFormat
+from q2_american_gut._type import QiitaMetadata
 
 from qiime2.plugin.testing import TestPluginBase
 
@@ -23,7 +26,7 @@ class TestFormats(TestPluginBase):
         filepath = self.get_data_path('qiita-metadata.tsv')
         format = QiitaMetadata(filepath, mode='r')
 
-        format.validata()
+        format.validate()
 
     def test_qiita_metadata_format_validate_negative(self):
         filepath = self.get_data_path('not-qiita-metadata.tsv')

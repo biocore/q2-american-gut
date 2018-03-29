@@ -7,13 +7,15 @@
 # ----------------------------------------------------------------------------
 
 import biom
-from qiime2.plugin import Plugin, Int, Str, Choices, Metadata, Bool, Range
+from qiime2.plugin import Plugin, Int, Str, Choices, Metadata, Bool, Range, \
+                            SemanticType
 from q2_types.feature_table import FeatureTable, Frequency
 from q2_types.feature_data import FeatureData, Taxonomy
 from q2_types.tree import Phylogeny, Rooted
 
 import q2_american_gut
 
+QiitaMetadata = SemanticType('QiitaMetadata')
 
 plugin = Plugin(
     name='american-gut',
@@ -52,15 +54,15 @@ plugin.methods.register_function(
                   'subset of data are fetched.')
     },
     outputs=[
-        ('feature_table', FeatureTable[Frequency]),
+        ('feature_table', FeatureTable[Frequency]), 
         ('feature_taxonomy', FeatureData[Taxonomy]),
-        #('sample_metadata', Metadata),
+        ('sample_metadata', QiitaMetadata),
         ('phylogeny', Phylogeny[Rooted])
     ],
     output_descriptions={
         'feature_table': "A feature table of the sample data",
         'feature_taxonomy': "Feature taxonomy information",
-        #'sample_metadata': "Feature metadata",
+        'sample_metadata': "Feature metadata",
         'phylogeny': "A phylogeny relating the features"
     }
 )
