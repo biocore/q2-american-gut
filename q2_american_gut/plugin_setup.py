@@ -7,16 +7,15 @@
 # ----------------------------------------------------------------------------
 
 import biom
-from qiime2.plugin import Plugin, Int, Str, Choices, Metadata, Bool, Range, \
-                            SemanticType
+from qiime2.plugin import Plugin, Int, Str, Choices, Metadata, Bool, Range
 from q2_types.feature_table import FeatureTable, Frequency
 from q2_types.feature_data import FeatureData, Taxonomy
 from q2_types.tree import Phylogeny, Rooted
 
 import q2_american_gut
 from q2_american_gut._type import QiitaMetadata
-from q2_american_gut._format import QiitaMetadataFormat,\
-                                        QiitaMetadataDirectoryFormat
+from q2_american_gut._format import (QiitaMetadataFormat,
+                                     QiitaMetadataDirectoryFormat)
 
 
 plugin = Plugin(
@@ -30,9 +29,11 @@ plugin = Plugin(
     citation_text='https://doi.org/10.1101/277970'
 )
 
+plugin.register_formats(QiitaMetadataFormat, QiitaMetadataDirectoryFormat)
+
 plugin.register_semantic_types(QiitaMetadata)
 plugin.register_semantic_type_to_format(QiitaMetadata, \
-                                        artifact_format=QiitaMetadataFormat)
+                                        artifact_format=QiitaMetadataDirectoryFormat)
 
 
 # TODO: add support for shotgun retrieval

@@ -13,6 +13,6 @@ from qiime2.plugin import SemanticType
 # complicated
 QiitaMetadata = SemanticType('QiitaMetadata')
 
-#plugin.register_semantic_types(QiitaMetadata)
+
 
 
