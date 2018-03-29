@@ -8,8 +8,10 @@
 
 import unittest
 
-from q2_american_gut import QiitaMetadata, QiitaMetadataDirectoryFormat
-
+#from q2_american_gut import QiitaMetadata, QiitaMetadataDirectoryFormat
+from q2_american_gut._type import QiitaMetadata
+from q2_american_gut._format import QiitaMetadataFormat, \
+        QiitaMetadataDirectoryFormat
 from qiime2.plugin.testing import TestPluginBase
 
 
