@@ -14,8 +14,10 @@ from q2_types.feature_data import FeatureData, Taxonomy
 from q2_types.tree import Phylogeny, Rooted
 
 import q2_american_gut
+from q2_american_gut._type import QiitaMetadata
+from q2_american_gut._format import QiitaMetadataFormat,\
+                                        QiitaMetadataDirectoryFormat
 
-QiitaMetadata = SemanticType('QiitaMetadata')
 
 plugin = Plugin(
     name='american-gut',
@@ -28,10 +30,15 @@ plugin = Plugin(
     citation_text='https://doi.org/10.1101/277970'
 )
 
+plugin.register_semantic_types(QiitaMetadata)
+plugin.register_semantic_type_to_format(QiitaMetadata, \
+                                        artifact_format=QiitaMetadataFormat)
+
 
 # TODO: add support for shotgun retrieval
 # TODO: add support for metabolomic retrieval
 # TODO: add support for HMP reference genome hits
+
 plugin.methods.register_function(
     function=q2_american_gut.fetch_amplicon,
     name='Fetch amplicon data',
@@ -56,7 +63,7 @@ plugin.methods.register_function(
     outputs=[
         ('feature_table', FeatureTable[Frequency]), 
         ('feature_taxonomy', FeatureData[Taxonomy]),
-        ('sample_metadata', QiitaMetadata),
+        ('sample_metadata', QiitaMetadata), # Need to get QiitaMetadata correctly defined.
         ('phylogeny', Phylogeny[Rooted])
     ],
     output_descriptions={
@@ -66,3 +73,4 @@ plugin.methods.register_function(
         'phylogeny': "A phylogeny relating the features"
     }
 )
+
