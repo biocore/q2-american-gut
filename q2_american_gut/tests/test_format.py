@@ -12,25 +12,26 @@ import shutil
 
 #from q2_american_gut import QiitaMetadata, QiitaMetadataDirectoryFormat,\
 #                                QiitaMetadataFormat
-from q2_american_gut._format import QiitaMetadataFormat, \
-                                    QiitaMetadataDirectoryFormat
-from q2_american_gut._type import QiitaMetadata
-
+#from q2_american_gut._format import QiitaMetadataFormat, \
+#                                    QiitaMetadataDirectoryFormat
+#from q2_american_gut._type import QiitaMetadata
+from q2_american_gut.plugin_setup import QiitaMetadataFormat, \
+                                         QiitaMetadataDirectoryFormat
 from qiime2.plugin.testing import TestPluginBase
-
+from qiime2.plugin import ValidationError
 
 class TestFormats(TestPluginBase):
     package = "q2_american_gut.tests"
 
     def test_qiita_metadata_validate_positive(self):
         filepath = self.get_data_path('qiita-metadata.tsv')
-        format = QiitaMetadata(filepath, mode='r')
+        format = QiitaMetadataFormat(filepath, mode='r')
 
         format.validate()
 
     def test_qiita_metadata_format_validate_negative(self):
         filepath = self.get_data_path('not-qiita-metadata.tsv')
-        format = QiitaMetadata(filepath, mode='r')
+        format = QiitaMetadataFormat(filepath, mode='r')
 
         with self.assertRaisesRegex(ValidationError, 'QiitaMetadataFormat'):
             format.validate()
@@ -38,7 +39,7 @@ class TestFormats(TestPluginBase):
     def test_qiita_metadata_dir_fmt_validate_positive(self):
         filepath = self.get_data_path('qiita-metadata.tsv')
         shutil.copy(filepath, self.temp_dir.name)
-        format = QiitaMetadataFormat(self.temp_dir.name, mode='r')
+        format = QiitaMetadataDirectoryFormat(self.temp_dir.name, mode='r')
 
         format.validate()
 
