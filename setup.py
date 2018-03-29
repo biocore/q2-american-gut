@@ -16,7 +16,7 @@ setup(
     cmdclass=versioneer.get_cmdclass(),
     packages=find_packages(),
     package_data={'q2_american_gut.tests': ['data/*'],
-                  'q2_taxa': ['assets/report/index.html',
+                  'q2_american_gut/': ['assets/report/index.html',
                               'assets/report/resources/*']
                   },
     author="Daniel McDonald",
