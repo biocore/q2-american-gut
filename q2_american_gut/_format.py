@@ -8,8 +8,6 @@
 
 import qiime2.plugin.model as model
 
-from q2_american_gut.plugin_setup import plugin
-
 class QiitaMetadataFormat(model.TextFileFormat):
     def sniff(self):
         # take the first line of the qiita metadata file
@@ -23,6 +21,8 @@ class QiitaMetadataFormat(model.TextFileFormat):
 
 # looking at the source code in model/directory_format, it is unclear to me
 # what SingleFileDirectoryFormat does. 
-QiitaMetadataDirectoryFormat = \
-        model.SingleFileDirectoryFormat('QiitaMetadataDirectoryFormat', 
-                'qiita-metadata.tsv', QiitaMetadataFormat)
+QiitaMetadataDirectoryFormat = model.SingleFileDirectoryFormat(
+        'QiitaMetadataDirectoryFormat', 'qiita-metadata.tsv', 
+        QiitaMetadataFormat)
+
+#plugin.register_formats(QiitaMetadataFormat, QiitaMetadataDirectoryFormat)

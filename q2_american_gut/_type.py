@@ -7,11 +7,12 @@
 # ----------------------------------------------------------------------------
 
 from qiime2.plugin import SemanticType
-from q2_american_gut.plugin_setup import plugin
+#from q2_american_gut.plugin_setup import plugin
 # I am not sure here if this type needs other parameters in the SemTyp 
-# function. Quality filters uses only this but sample data is a little more complicated
+# function. Quality filters uses only this but sample data is a little more
+# complicated
 QiitaMetadata = SemanticType('QiitaMetadata')
 
-plugin.register_semantic_types(QiitaMetadata)
+
 
 
