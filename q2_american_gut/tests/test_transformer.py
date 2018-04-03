@@ -6,13 +6,13 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import uniitest
+import unittest
 
 import pandas as pd
 
 import qiime2
 from pandas.util.testing import assert_series_equal
-from q2_american_gut import QiitaMetadataFormat, QiitaMetadata
+from q2_american_gut.plugin_setup import QiitaMetadataFormat, QiitaMetadata
 from qiime2.plugin.testing import TestPluginBase
 
 # want metdata to format, format to metadata, qiitameta to meta and meta to qiita
@@ -29,7 +29,7 @@ class TestTransformers(TestPluginBase):
         obs = transformer(exp)
         obs = pd.Series.from_csv(str(obs), sep='\t', header=0)
 
-        assert_series_equal(exp, obs)        
+        assert_series_equal(exp, obs)
         
     def test_qiita_metadata_format_to_pd_dataframe(self):
         filename = 'qiita-metadata.tsv'
