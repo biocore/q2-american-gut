@@ -18,7 +18,7 @@ from qiime2.plugin.testing import TestPluginBase
 # want metdata to format, format to metadata, qiitameta to meta and meta to qiita
 class TestTransformers(TestPluginBase):
     package = "q2_american_gut.tests"
-    
+
     def test_pd_dataframe_to_qiita_metadata_format(self):
         # this transformer i believe needs to be created :L
         transformer = self.get_transformer(pd.Series, QiitaMetadataFormat)
@@ -30,7 +30,11 @@ class TestTransformers(TestPluginBase):
         obs = pd.Series.from_csv(str(obs), sep='\t', header=0)
 
         assert_series_equal(exp, obs)
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 9ffa932a61f8352bf1336003c1df490d375f693d
     def test_qiita_metadata_format_to_pd_dataframe(self):
         filename = 'qiita-metadata.tsv'
         _, obs = self.transform_format(QiitaMetadataFormat, pd.DataFrame,
@@ -51,8 +55,8 @@ class TestTransformers(TestPluginBase):
         self.assertEqual(obs, exp_md)
 
     def test_metadata_to_qiita_metadata_format(self):
-        # i believe this is is how you would test this transoformation, 
-        # using a transformer as in pd_dataframe_to_qiita_md_format, 
+        # i believe this is is how you would test this transoformation,
+        # using a transformer as in pd_dataframe_to_qiita_md_format,
         # but im not sure. If this is the case, then this transformer also
         # needs to be created
         transformer = self.get_transformer(qiime2.Metadata, QiitaMetadataFormat)
