@@ -11,7 +11,7 @@ import unittest
 import pandas as pd
 
 import qiime2
-from pandas.util.testing import assert_series_equal
+from pandas.util.testing import assert_series_equal, assert_frame_equal
 from q2_american_gut.plugin_setup import QiitaMetadataFormat, QiitaMetadata
 from qiime2.plugin.testing import TestPluginBase
 
@@ -20,21 +20,18 @@ class TestTransformers(TestPluginBase):
     package = "q2_american_gut.tests"
 
     def test_pd_dataframe_to_qiita_metadata_format(self):
-        # this transformer i believe needs to be created :L
-        transformer = self.get_transformer(pd.Series, QiitaMetadataFormat)
+        transformer = self.get_transformer(pd.DataFrame, QiitaMetadataFormat)
 
-        exp_index = 'some indexes...'
-        exp = 'some dataframe pd.DataFrame(...)'
+        exp_index = pd.Index(['Sample1', 'Sample2'], dtype=object)
+        exp_cols = ['Value']
+        exp = pd.DataFrame([0.55, 0.99], index=exp_index, columns=exp_cols)
 
         obs = transformer(exp)
-        obs = pd.Series.from_csv(str(obs), sep='\t', header=0)
-
-        assert_series_equal(exp, obs)
-<<<<<<< HEAD
-        
-=======
-
->>>>>>> 9ffa932a61f8352bf1336003c1df490d375f693d
+        obs = pd.DataFrame.from_csv(str(obs), sep='\t')
+        print(exp)
+        print(obs, '\n')
+        assert_frame_equal(exp, obs)
+    '''
     def test_qiita_metadata_format_to_pd_dataframe(self):
         filename = 'qiita-metadata.tsv'
         _, obs = self.transform_format(QiitaMetadataFormat, pd.DataFrame,
@@ -68,7 +65,7 @@ class TestTransformers(TestPluginBase):
 
     def test_qiita_metadata_to_metadata(self):
         pass
-
+    '''
 
 if __name__ == '__main__':
     unittest.main()
