@@ -39,6 +39,7 @@ def report(output_dir: str,
     shutil.copytree(os.path.join(TEMPLATES, 'report', 'resources'),
                     os.path.join(output_dir, 'resources'))
 
+
 def _insanity_checker(samples, metadata, table, alpha, pcoa):
     samples = set(samples)
 

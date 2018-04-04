@@ -28,8 +28,10 @@ plugin = Plugin(
     citation_text='https://doi.org/10.1101/277970'
 )
 
+
 def dummy(foo: biom.Table) -> biom.Table:
     return foo
+
 
 plugin.methods.register_function(
     function=dummy,
