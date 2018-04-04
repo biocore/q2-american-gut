@@ -10,18 +10,18 @@ import qiime2.plugin.model as model
 
 class QiitaMetadataFormat(model.TextFileFormat):
     def sniff(self):
-        
-        line = open(str(self)).readline().strip('\n')
-        
-        return len(line.split('\t')) == 4
-        # change this to look through the first five rows and validate that 
-        # they are tab delimited and all have the same number of rows
+        lines = []
+        fn = open(str(self))
+        for i in range(5):
+            lines.append(fn.readline())
+        length = len(lines[0].split('\t'))
+        if length == 1:
+            return False
+        for line in lines:
+            if len(line.split('\t')) != length:
+                return False
+        return True
 
-
-# looking at the source code in model/directory_format, it is unclear to me
-# what SingleFileDirectoryFormat does. 
 QiitaMetadataDirectoryFormat = model.SingleFileDirectoryFormat(
         'QiitaMetadataDirectoryFormat', 'qiita-metadata.tsv', 
         QiitaMetadataFormat)
-
-#plugin.register_formats(QiitaMetadataFormat, QiitaMetadataDirectoryFormat)
