@@ -78,13 +78,6 @@ class TestTransformers(TestPluginBase):
         obs = pd.DataFrame.from_csv(str(obs), sep='\t')
         assert_frame_equal(exp, obs)
 
-    '''
-    def test_metadata_to_qiita_metadata(self):
-        
-    
-    def test_qiita_metadata_to_metadata(self):
-        pass
-    '''
 
 if __name__ == '__main__':
     unittest.main()
