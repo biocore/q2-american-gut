@@ -11,7 +11,8 @@ import unittest
 import pandas as pd
 
 import qiime2
-from pandas.util.testing import assert_series_equal, assert_frame_equal
+
+from pandas.util.testing import assert_frame_equal
 from q2_american_gut.plugin_setup import QiitaMetadataFormat, QiitaMetadata
 from qiime2.plugin.testing import TestPluginBase
 
@@ -28,41 +29,59 @@ class TestTransformers(TestPluginBase):
 
         obs = transformer(exp)
         obs = pd.DataFrame.from_csv(str(obs), sep='\t')
-        print(exp)
-        print(obs, '\n')
         assert_frame_equal(exp, obs)
-    '''
+    
     def test_qiita_metadata_format_to_pd_dataframe(self):
         filename = 'qiita-metadata.tsv'
         _, obs = self.transform_format(QiitaMetadataFormat, pd.DataFrame,
                                        filename)
-        exp_index = 'some indexes pd.Index(...)'
-        exp = 'some dataframe pd.DataFrame(...)'
-        assert_series_equal(exp, obs)
+        
+        c1 = ['123.456.789', 'x', 'y', '1.0']
+        c2 = ['123.456.012', 'thing', '0', '2.3']
+        c3 = ['123.xxx.789', float('nan'), 'stuff', 'None']
+        c4 = ['321.xxx.789', float('nan'), 'stuff', 'None']
+        cols = ['#SampleID', 'foo', 'bar', 'baz']
+        exp = pd.DataFrame([c1, c2, c3, c4], columns=cols)
 
+        assert_frame_equal(exp, obs)
+    
     def test_qiita_metadata_format_to_metadata(self):
         filename = 'qiita-metadata.tsv'
         _, obs = self.transform_format(QiitaMetadataFormat, qiime2.Metadata,
                                        filename)
 
-        exp_index = 'some indexes? pd.Index(...)'
-        exp_df = 'some dataframe pd.DataFrame(...)'
-        exp_md = qiime2.Metadata(exp_df)
+        c1 = ['123.456.789', 'x', 'y', '1.0']
+        c2 = ['123.456.012', 'thing', '0', '2.3']
+        c3 = ['123.xxx.789', float('nan'), 'stuff', 'None']
+        c4 = ['321.xxx.789', float('nan'), 'stuff', 'None']
+        cols = ['#SampleID', 'foo', 'bar', 'baz']
+        exp = pd.DataFrame([c1, c2, c3, c4], columns=cols)
+        exp.set_index('#SampleID', inplace=True)
+
+        exp_md = qiime2.Metadata(exp)
 
         self.assertEqual(obs, exp_md)
-
+    
     def test_metadata_to_qiita_metadata_format(self):
-        # i believe this is is how you would test this transoformation,
-        # using a transformer as in pd_dataframe_to_qiita_md_format,
-        # but im not sure. If this is the case, then this transformer also
-        # needs to be created
         transformer = self.get_transformer(qiime2.Metadata, QiitaMetadataFormat)
-        # this is unfinished
-        pass
+        
+        c1 = ['123.456.789', 'x', 'y', '1.0']
+        c2 = ['123.456.012', 'thing', '0', '2.3']
+        c3 = ['123.xxx.789', float('nan'), 'stuff', 'None']
+        c4 = ['321.xxx.789', float('nan'), 'stuff', 'None']
+        cols = ['#SampleID', 'foo', 'bar', 'baz']
+        exp = pd.DataFrame([c1, c2, c3, c4], columns=cols)
+        exp.set_index('#SampleID', inplace=True)
 
+        exp_md = qiime2.Metadata(exp)
+        obs = transformer(exp_md)
+        obs = pd.DataFrame.from_csv(str(obs), sep='\t')
+        assert_frame_equal(exp, obs)
+
+    '''
     def test_metadata_to_qiita_metadata(self):
-        pass # this isnt even started
-
+        
+    
     def test_qiita_metadata_to_metadata(self):
         pass
     '''
