@@ -12,7 +12,3 @@ from qiime2.plugin import SemanticType
 # function. Quality filters uses only this but sample data is a little more
 # complicated
 QiitaMetadata = SemanticType('QiitaMetadata')
-
-
-
-

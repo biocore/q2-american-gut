@@ -5,7 +5,7 @@
 #
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
-
+import importlib
 import biom
 from qiime2.plugin import Plugin, Int, Str, Choices, Metadata, Bool, Range
 from q2_types.feature_table import FeatureTable, Frequency
@@ -33,7 +33,7 @@ plugin.register_formats(QiitaMetadataFormat, QiitaMetadataDirectoryFormat)
 
 plugin.register_semantic_types(QiitaMetadata)
 plugin.register_semantic_type_to_format(QiitaMetadata, \
-                                        artifact_format=QiitaMetadataDirectoryFormat)
+                                artifact_format=QiitaMetadataDirectoryFormat)
 
 
 # TODO: add support for shotgun retrieval
@@ -62,9 +62,9 @@ plugin.methods.register_function(
                   'subset of data are fetched.')
     },
     outputs=[
-        ('feature_table', FeatureTable[Frequency]), 
+        ('feature_table', FeatureTable[Frequency]),
         ('feature_taxonomy', FeatureData[Taxonomy]),
-        ('sample_metadata', QiitaMetadata), # Need to get QiitaMetadata correctly defined.
+        ('sample_metadata', QiitaMetadata),
         ('phylogeny', Phylogeny[Rooted])
     ],
     output_descriptions={
@@ -74,4 +74,4 @@ plugin.methods.register_function(
         'phylogeny': "A phylogeny relating the features"
     }
 )
-
+importlib.import_module('q2_american_gut._transformer')
