@@ -7,12 +7,15 @@
 # ----------------------------------------------------------------------------
 import importlib
 import biom
-from qiime2.plugin import Plugin, Int, Str, Choices, Metadata, Bool, Range
+from qiime2.plugin import Plugin, Int, Str, Choices, Metadata, Bool, Range, List
 from q2_types.feature_table import FeatureTable, Frequency
 from q2_types.feature_data import FeatureData, Taxonomy
+from q2_types.sample_data import AlphaDiversity, SampleData
+from q2_types.ordination import PCoAResults
 from q2_types.tree import Phylogeny, Rooted
 
 import q2_american_gut
+from q2_american_gut._visualizer import report
 from q2_american_gut._type import QiitaMetadata
 from q2_american_gut._format import (QiitaMetadataFormat,
                                      QiitaMetadataDirectoryFormat)
@@ -39,7 +42,6 @@ plugin.register_semantic_type_to_format(QiitaMetadata, \
 # TODO: add support for shotgun retrieval
 # TODO: add support for metabolomic retrieval
 # TODO: add support for HMP reference genome hits
-
 plugin.methods.register_function(
     function=q2_american_gut.fetch_amplicon,
     name='Fetch amplicon data',
@@ -73,5 +75,27 @@ plugin.methods.register_function(
         'sample_metadata': "Feature metadata",
         'phylogeny': "A phylogeny relating the features"
     }
+)
+
+
+plugin.visualizers.register_function(
+    function=report,
+    inputs={
+        'taxonomy': FeatureData[Taxonomy],
+        'table': FeatureTable[Frequency],
+        'pcoa': PCoAResults,
+        'alpha': SampleData[AlphaDiversity]
+        },
+    parameters={'metadata': Metadata,
+                'samples': List[Str]},
+    input_descriptions={
+        'taxonomy': 'placeholder 1',
+        'table': 'Feature table to visualize at various taxonomic levels.',
+        'pcoa': 'placeholder',
+        'alpha': 'placeholder'},
+    parameter_descriptions={'metadata': 'The sample metadata.',
+                            'samples': 'list of relevant samples.'},
+    name='Generate AGP report.',
+    description='none'
 )
 importlib.import_module('q2_american_gut._transformer')
