@@ -6,11 +6,19 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
+from pkg_resources import Requirement, resource_filename
+
+import qiime2
+from q2_types.feature_data import DNAIterator
 import biom
 import pandas as pd
 import skbio
 import redbiom.search
 import redbiom.summarize
+
+
+CLASSIFIER = (Requirement.parse('q2_american_gut'),
+              'q2_american_gut/assets/gg-13-8-99-515-806-nb-classifier.qza')
 
 
 def _determine_context(processing_type, trim_length):
@@ -58,11 +66,28 @@ def _determine_context(processing_type, trim_length):
     return found
 
 
-def _assign_taxonomy(table):
-    return pd.DataFrame()
+def _get_featuredata_from_table(table):
+    """Extract the observations and interpret as skbio.DNA"""
+    if table.is_empty():
+        raise ValueError("No features")
+
+    return DNAIterator((skbio.DNA(i, metadata={'id': i})
+                                  for i in table.ids(axis='observation')))
 
 
-def _insert_fragments(table):
+def _assign_taxonomy(table, threads):
+    from qiime2.plugins import feature_classifier
+    dna_iter = _get_featuredata_from_table(table)
+
+    classifier = Artifact.load(resource_filename(*CLASSIFIER))
+    tax, = feature_classifier.methods.classify_sklearn(dna_iter, classifier,
+                                                       n_jobs=threads)
+    return tax
+
+
+def _insert_fragments(table, threads):
+    from qiime2.plugins import fragment_insertion
+    dna_iter = _get_featuredata_from_table(table)
     return skbio.TreeNode()
 
 
@@ -88,7 +113,9 @@ def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
     table, ambiguity_map_tab = redbiom.fetch.data_from_samples(context, samples)
     md, ambiguity_map_md = redbiom.fetch.metadata_from_samples(context, samples)
 
-    taxonomy = _assign_taxonomy(table)
-    phylogeny = _insert_fragments(table)
+    # TODO: do not execute these steps if we're pulling out closed reference
+    # as the taxonomy and tree already exist
+    taxonomy = _assign_taxonomy(table, threads)
+    phylogeny = _insert_fragments(table, threads)
 
     return table, taxonomy, md, phylogeny

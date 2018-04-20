@@ -8,10 +8,34 @@
 
 import unittest
 
+import biom
+import numpy as np
+import skbio
 from qiime2.plugin.testing import TestPluginBase
+from q2_types.feature_data import DNAIterator
 
 from q2_american_gut import fetch_amplicon
-from q2_american_gut._fetch import _determine_context
+from q2_american_gut._fetch import _determine_context, _get_featuredata_from_table
+
+
+
+class DNAIteratorTests(TestPluginBase):
+    package = "q2_american_gut.tests"
+
+    def test_empty_table(self):
+        tab = biom.Table([], [], [])
+
+        with self.assertRaisesRegex(ValueError, "No features"):
+            _get_featuredata_from_table(tab)
+
+    def test_get_iterator(self):
+        tab = biom.Table(np.ones((3, 2)), ['ATCC', 'ATGG', 'CACA'],
+                         ['S1', 'S2'])
+        exp = [skbio.DNA('ATCC', metadata={'id': 'ATCC'}),
+               skbio.DNA('ATGG', metadata={'id': 'ATGG'}),
+               skbio.DNA('CACA', metadata={'id': 'CACA'})]
+        obs = list(_get_featuredata_from_table(tab))
+        self.assertEqual(obs, exp)
 
 
 class DetermineContextTests(TestPluginBase):
