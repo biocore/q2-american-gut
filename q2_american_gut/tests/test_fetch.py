@@ -93,7 +93,8 @@ class TestFetch(TestPluginBase):
 
 
     def test_positive_fetch_deblur(self):
-        obs_table, obs_tax, obs_md, obs_phy = fetch_amplicon('2136', 'deblur', 100)
+        obs_table, obs_tax, obs_md, obs_phy = \
+                            fetch_amplicon('2136', 'deblur', 100)
     
         view_table = obs_table.view(biom.Table)
         view_tax = obs_tax.view(pd.DataFrame)
@@ -119,7 +120,7 @@ class TestFetch(TestPluginBase):
         self.assertEqual(view_table.shape, exp_table_shape)
         df_table = view_table.to_dataframe()
         self.assertEqual(set(df_table.index), set(view_md.index))
-
+        
     def test_get_closed_reference_study(self):
         id_ = '10343'
         proc_type = 'closed-reference'
@@ -148,7 +149,14 @@ class TestFetch(TestPluginBase):
         self.assertTrue(set(tax.index).issubset({n.name for n in tree.tips()}))
         self.assertEqual(set(table.ids()), set(md.index))
 
+        
+        def test_fetch_phylogeny(self):
+            
+            pass
 
+        def test_fetch_taxonomy(self):
+
+            pass
 
 if __name__ == '__main__':
     unittest.main()
