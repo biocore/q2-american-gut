@@ -91,6 +91,34 @@ class TestFetch(TestPluginBase):
                                     "ID %s is not a qiita ID" % id_):
             fetch_amplicon(id_, 'deblur', 100)
 
+    def test_get_closed_reference_study(self):
+        id_ = '10343'
+        proc_type = 'closed-reference'
+        length = 100
+        debug = True
+
+        table, tax, md, tree = fetch_amplicon(id_, proc_type,
+                                              length, debug=debug)
+
+        exp_ids = ['10343.1384a.36263',
+                   '10343.2024a.36263',
+                   '10343.2025a.36263',
+                   '10343.2026a.36263',
+                   '10343.2160a.36263',
+                   '10343.2161a.36263',
+                   '10343.2162a.36263',
+                   '10343.BLANK.JS6.12E.36263',
+                   '10343.BLANK.JS6.12F.36263',
+                   '10343.BLANK.JS6.12G.36263']
+
+        # test consistency between the outputs
+        self.assertEqual(sorted(table.ids()), sorted(exp_ids))
+        self.assertEqual(len(table.ids(axis='observation')), 826)
+        self.assertEqual(set(table.ids(axis='observation')),
+                         set(tax.index))
+        self.assertTrue(set(tax.index).issubset({n.name for n in tree.tips()}))
+        self.assertEqual(set(table.ids()), set(md.index))
+
 
 if __name__ == '__main__':
     unittest.main()
