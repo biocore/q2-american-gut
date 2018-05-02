@@ -16,10 +16,13 @@ import skbio
 from redbiom import search, fetch, summarize
 import redbiom.search
 import redbiom.summarize
+import redbiom.fetch
 
 
 CLASSIFIER = (Requirement.parse('q2_american_gut'),
               'q2_american_gut/assets/gg-13-8-99-515-806-nb-classifier.qza')
+GG_TREE = (Requirement.parse('q2_american_gut'),
+          'q2_american_gut/assets/97_otus.tree')
 
 
 def _determine_context(processing_type, trim_length):
@@ -45,19 +48,19 @@ def _determine_context(processing_type, trim_length):
 
     found = None
     for context in contexts.ContextName:
-        context = context.lower()
+        test_ctx = context.lower()
 
         # american gut amplicon data are only 16S v4
-        if '16s' not in context or 'v4' not in context:
+        if '16s' not in test_ctx or 'v4' not in test_ctx:
             continue
 
         # TODO: the release candidate version of the qiita redbiom database
         # has updated context names which include the reference used.
         # if we're closed reference, restrict to greengenes as a reference
-        #if processing_type != 'deblur' and 'greengenes' not in context:
+        #if processing_type != 'deblur' and 'greengenes' not in test_ctx:
         #    continue
 
-        if processing_type in context and "%dnt" % trim_length in context:
+        if processing_type in test_ctx and "%dnt" % trim_length in test_ctx:
             found = context
 
     if found is None:
@@ -76,13 +79,23 @@ def _get_featuredata_from_table(table):
                                   for i in table.ids(axis='observation')))
 
 
-def _assign_taxonomy(table, threads):
-    from qiime2.plugins import feature_classifier
-    dna_iter = _get_featuredata_from_table(table)
+def _fetch_taxonomy(processing_type, table, threads):
+    if processing_type == 'deblur':
+        from qiime2.plugins import feature_classifier
+        dna_iter = _get_featuredata_from_table(table)
 
-    classifier = Artifact.load(resource_filename(*CLASSIFIER))
-    tax, = feature_classifier.methods.classify_sklearn(dna_iter, classifier,
-                                                       n_jobs=threads)
+        classifier = qiime2.Artifact.load(resource_filename(*CLASSIFIER))
+        tax, = feature_classifier.methods.classify_sklearn(dna_iter,
+                                                           classifier,
+                                                           n_jobs=threads)
+    else:
+        tax_table = pd.DataFrame([(i, m['taxonomy'], 1.0)
+                                  for v, i, m in table.iter(axis='observation',
+                                                            dense=False)],
+                                 columns=['Feature ID', 'Taxon', 'Confidence'])
+        tax_table.set_index('Feature ID', inplace=True)
+        tax = qiime2.Artifact.import_data('FeatureData[Taxonomy]', tax_table)
+
     return tax
 
 def _get_taxonomy(table):
@@ -93,10 +106,17 @@ def _get_closed_reference_phylogeny():
 
     pass
 
-def _insert_fragments(table, threads):
-    from qiime2.plugins import fragment_insertion
-    dna_iter = _get_featuredata_from_table(table)
-    return skbio.TreeNode()
+def _fetch_phylogeny(processing_type, table, threads):
+    if processing_type == 'deblur':
+        from qiime2.plugins import fragment_insertion
+        dna_iter = _get_featuredata_from_table(table)
+        # TODO: execute insertion
+        tree = skbio.TreeNode()
+    else:
+        tree = skbio.TreeNode.read(resource_filename(*GG_TREE))
+        tree = qiime2.Artifact.import_data('Phylogeny[Rooted]', tree)
+
+    return tree
 
 
 def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
@@ -119,8 +139,16 @@ def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
     if not samples:
         raise ValueError("study ID %s has no samples or is not a Qiita ID")
 
+    if debug:
+        # just take top 10 but be consistent about which 10 are obtained
+        samples = set(sorted(samples)[:10])
+
     table, ambiguity_map_tab = redbiom.fetch.data_from_samples(context, samples)
-    md, ambiguity_map_md = redbiom.fetch.metadata_from_samples(context, samples)
+    md, ambiguity_map_md = redbiom.fetch.sample_metadata(samples, context=context)
+    md.set_index('#SampleID', inplace=True)
+
+    taxonomy = _fetch_taxonomy(processing_type, table, threads)
+    phylogeny = _fetch_phylogeny(processing_type, table, threads)
 
     # TODO: do not execute these steps if we're pulling out closed reference
     # as the taxonomy and tree already exist
@@ -133,6 +161,8 @@ def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
         phylogeny = _insert_fragments(table, threads) # assign tax or insert frag
 
     # qiita study 2136
+    taxonomy = taxonomy.view(pd.DataFrame)
+    phylogeny = phylogeny.view(skbio.TreeNode)
 
     return table, taxonomy, md, phylogeny
 
