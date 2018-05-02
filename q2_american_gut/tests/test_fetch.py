@@ -52,7 +52,7 @@ class DetermineContextTests(TestPluginBase):
     def test_context_does_not_have_trim_length(self):
         proctype = 'deblur'
         trim = 42
-
+        # some random change
         msg = "Cannot find %s-%dnt for 16S data" % (proctype, trim)
         with self.assertRaisesRegex(ValueError, msg):
             _determine_context(proctype, trim)
