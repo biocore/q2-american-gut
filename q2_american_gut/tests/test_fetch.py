@@ -52,7 +52,7 @@ class DetermineContextTests(TestPluginBase):
     def test_context_does_not_have_trim_length(self):
         proctype = 'deblur'
         trim = 42
-        # some random change
+        
         msg = "Cannot find %s-%dnt for 16S data" % (proctype, trim)
         with self.assertRaisesRegex(ValueError, msg):
             _determine_context(proctype, trim)
@@ -149,14 +149,24 @@ class TestFetch(TestPluginBase):
         self.assertTrue(set(tax.index).issubset({n.name for n in tree.tips()}))
         self.assertEqual(set(table.ids()), set(md.index))
 
+    def test_get_deblur_study(self):
+        id_ = '2136'
+        proc_type = 'deblur'
+        length = 100
+        debug = True
+
+        table, tax, md, tree = fetch_amplicon(id_, proc_type, 
+                                              length, debug=debug)
         
-        def test_fetch_phylogeny(self):
+
+        
+    def test_fetch_phylogeny(self):
             
-            pass
+        pass
 
-        def test_fetch_taxonomy(self):
+    def test_fetch_taxonomy(self):
 
-            pass
+        pass
 
 if __name__ == '__main__':
     unittest.main()

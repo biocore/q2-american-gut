@@ -13,7 +13,6 @@ from q2_types.feature_data import DNAIterator
 import biom
 import pandas as pd
 import skbio
-from redbiom import search, fetch, summarize
 import redbiom.search
 import redbiom.summarize
 import redbiom.fetch
@@ -21,7 +20,7 @@ import redbiom.fetch
 
 CLASSIFIER = (Requirement.parse('q2_american_gut'),
               'q2_american_gut/assets/gg-13-8-99-515-806-nb-classifier.qza')
-GG_TREE = (Requirement.parse('q2_american_gut'),
+GG_TREE = (Requirement.parse('q2_american_gut'), 
           'q2_american_gut/assets/97_otus.tree')
 
 
@@ -81,6 +80,7 @@ def _get_featuredata_from_table(table):
 
 def _fetch_taxonomy(processing_type, table, threads):
     if processing_type == 'deblur':
+        
         from qiime2.plugins import feature_classifier
         dna_iter = _get_featuredata_from_table(table)
 
@@ -118,6 +118,11 @@ def _fetch_phylogeny(processing_type, table, threads):
 
     return tree
 
+def _insert_fragments(table, threads):
+    pass
+
+def _assign_taxonomy(table, threads):
+    pass
 
 def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
                    threads: int=1, debug: bool=False) -> (biom.Table,
@@ -132,7 +137,7 @@ def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
         raise ValueError("ID %s is not a qiita ID" % qiita_study_id)
 
     context = _determine_context(processing_type, trim_length)
-
+    
     query = "where qiita_study_id==%s" % qiita_study_id
     samples = redbiom.search.metadata_full(query)
 
@@ -152,6 +157,7 @@ def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
 
     # TODO: do not execute these steps if we're pulling out closed reference
     # as the taxonomy and tree already exist
+    '''
     if processing_type == 'closed-reference':
         taxonomy = _get_taxonomy(table)
         phylogeny = _get_closed_reference_phylogeny()
@@ -159,7 +165,7 @@ def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
     else:
         taxonomy = _assign_taxonomy(table, threads) # for closed ref you do not
         phylogeny = _insert_fragments(table, threads) # assign tax or insert frag
-
+    '''
     # qiita study 2136
     taxonomy = taxonomy.view(pd.DataFrame)
     phylogeny = phylogeny.view(skbio.TreeNode)
