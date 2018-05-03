@@ -9,7 +9,9 @@
 from pkg_resources import Requirement, resource_filename
 
 import qiime2
-from q2_types.feature_data import DNAIterator
+from q2_types.feature_data import (DNAIterator,
+                                   AlignedDNASequencesDirectoryFormat)
+from q2_types.tree import NewickFormat
 import biom
 import pandas as pd
 import skbio
@@ -17,11 +19,16 @@ import redbiom.search
 import redbiom.summarize
 import redbiom.fetch
 
+from q2_american_gut._type import QiitaMetadata
 
 CLASSIFIER = (Requirement.parse('q2_american_gut'),
               'q2_american_gut/assets/gg-13-8-99-515-806-nb-classifier.qza')
 GG_TREE = (Requirement.parse('q2_american_gut'),
           'q2_american_gut/assets/97_otus.tree')
+DEBUG_PHY = (Requirement.parse('q2_american_gut'),
+             'q2_american_gut/assets/reference_phylogeny_tiny.qza')
+DEBUG_ALN = (Requirement.parse('q2_american_gut'),
+            'q2_american_gut/assets/reference_alignment_tiny.qza')
 
 
 def _determine_context(processing_type, trim_length):
@@ -79,12 +86,28 @@ def _get_featuredata_from_table(table):
 
 
 def _fetch_taxonomy(processing_type, table, threads):
+    """Fetch taxonomy based on the processing type
+
+    Parameters
+    ----------
+    processing_type : {'deblur', 'closed-reference'}
+        The processing type which determines how we obtain taxonimic detail.
+    table : biom.Table
+        The FrequencyTable
+    threads : int
+        The number of threads to use
+
+    Returns
+    -------
+    FeatureData[Taxonomy]
+    """
     if processing_type == 'deblur':
         from qiime2.plugins import feature_classifier
         dna_iter = _get_featuredata_from_table(table)
 
+        reads = qiime2.Artifact.import_data('FeatureData[Sequence]', dna_iter)
         classifier = qiime2.Artifact.load(resource_filename(*CLASSIFIER))
-        tax, = feature_classifier.methods.classify_sklearn(dna_iter,
+        tax, = feature_classifier.methods.classify_sklearn(reads,
                                                            classifier,
                                                            n_jobs=threads)
     else:
@@ -98,12 +121,46 @@ def _fetch_taxonomy(processing_type, table, threads):
     return tax
 
 
-def _fetch_phylogeny(processing_type, table, threads):
+def _fetch_phylogeny(processing_type, table, threads, debug):
+    """Fetch phylogeny based on the processing type
+
+    Parameters
+    ----------
+    processing_type : {'deblur', 'closed-reference'}
+        The processing type which determines how we resolve a phylogeny.
+    table : biom.Table
+        The FrequencyTable
+    threads : int
+        The number of threads to use
+    debug : bool, optional
+        If debug, use a small small tree for insertion to avoid spinup
+        time.
+
+    Returns
+    -------
+    Phylogeny[Rooted]
+    """
     if processing_type == 'deblur':
-        from qiime2.plugins import fragment_insertion
+        from qiime2.plugins.fragment_insertion.methods import sepp
+
+        # insertion is extremely expensive to spin up (20min) so short
+        # circuit if debug
+        if debug:
+            ref_phy = qiime2.Artifact.load(resource_filename(*DEBUG_PHY))
+            #ref_phy = ref_phy.view(NewickFormat)
+
+            ref_aln = qiime2.Artifact.load(resource_filename(*DEBUG_ALN))
+            #ref_aln = ref_aln.view(AlignedDNASequencesDirectoryFormat)
+        else:
+            ref_phy = None
+            ref_aln = None
+
         dna_iter = _get_featuredata_from_table(table)
-        # TODO: execute insertion
-        tree = skbio.TreeNode()
+        reads = qiime2.Artifact.import_data('FeatureData[Sequence]', dna_iter)
+        tree, _ = sepp(reads, threads=threads,
+                       reference_alignment=ref_aln,
+                       reference_phylogeny=ref_phy)
+
     else:
         tree = skbio.TreeNode.read(resource_filename(*GG_TREE))
         tree = qiime2.Artifact.import_data('Phylogeny[Rooted]', tree)
@@ -139,9 +196,10 @@ def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
     md.set_index('#SampleID', inplace=True)
 
     taxonomy = _fetch_taxonomy(processing_type, table, threads)
-    phylogeny = _fetch_phylogeny(processing_type, table, threads)
+    phylogeny = _fetch_phylogeny(processing_type, table, threads, debug)
 
-    taxonomy = taxonomy.view(pd.DataFrame)
-    phylogeny = phylogeny.view(skbio.TreeNode)
+    md = qiime2.Artifact.import_data(QiitaMetadata, md)
+    md = qiime2.Metadata.from_artifact(md)
+    table = qiime2.Artifact.import_data('FeatureTable[Frequency]', table)
 
     return table, taxonomy, md, phylogeny

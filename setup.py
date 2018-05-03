@@ -32,7 +32,6 @@ def _post(obj):
     # source the taxonomy classifier (for assignments for deblur sequences)
     src_url = 'https://data.qiime2.org/%s/common/gg-13-8-99-515-806-nb-classifier.qza' % version  # noqa
     out_f = os.path.join(assets_dir, 'gg-13-8-99-515-806-nb-classifier.qza')
-    print(src_url)
 
     req = urllib.request.Request(src_url, headers={'User-Agent': 'Mozilla/5.0'})
     with urllib.request.urlopen(req) as response, open(out_f, 'wb') as out:
@@ -41,7 +40,6 @@ def _post(obj):
     # source the Greengenes tree (for closed reference data)
     src_url = 'ftp://ftp.microbio.me/greengenes_release/gg_13_8_otus/trees/97_otus.tree'  # noqa
     out_f = os.path.join(assets_dir, '97_otus.tree')
-    print(src_url)
 
     req = urllib.request.Request(src_url, headers={'User-Agent': 'Mozilla/5.0'})
     with urllib.request.urlopen(req) as response, open(out_f, 'wb') as out:
@@ -71,8 +69,10 @@ setup(
     version=versioneer.get_version(),
     packages=find_packages(),
     package_data={'q2_american_gut.tests': ['data/*'],
-                  'q2_american_gut/': ['assets/report/index.html',
-                                       'assets/report/resources/*']
+                  'q2_american_gut': ['assets/reference_phylogeny_tiny.qza',
+                                      'assets/reference_alignment_tiny.qza',
+                                      'assets/report/index.html',
+                                      'assets/report/resources/*']
                   },
     author="Daniel McDonald",
     author_email="danielmcdonald@ucsd.edu",
