@@ -93,36 +93,6 @@ class TestFetch(TestPluginBase):
         with self.assertRaisesRegex(ValueError,
                                     "ID %s is not a qiita ID" % id_):
             fetch_amplicon(id_, 'deblur', 100)
-
-
-    def test_positive_fetch_deblur(self):
-        obs_table, obs_tax, obs_md, obs_phy = \
-                            fetch_amplicon('2136', 'deblur', 100)
-    
-        view_table = obs_table.view(biom.Table)
-        view_tax = obs_tax.view(pd.DataFrame)
-        view_md = obs_md.view(pd.DataFrame)
-        exp_table_shape = (15448, 504)
-        self.assertEqual(view_table.shape, exp_table_shape)
-        # view taxonomy as pd.Dataframe, assert that all identifiers are present
-        # for md assert that all 
-        # for phyl want to test that the feature identifiers in table are subest of 
-        # the tip names in obs_phy are is subset of tips in table 
-        df_table = view_table.to_dataframe()
-        self.assertEqual(set(df_table.index), set(view_md.index))
-        
-
-    def test_positive_fetch_closed_ref(self):
-        obs_table, obs_tax, obs_md, obs_phy = fetch_amplicon('2136', 
-                                            'closed-reference',  100)
-
-        view_table = obs_table.view(biom.Table)
-        view_tax = obs_tax.view(pd.DataFrame)
-        view_md = obs_md.view(pd.DataFrame)
-        exp_table_shape = (7432, 533)
-        self.assertEqual(view_table.shape, exp_table_shape)
-        df_table = view_table.to_dataframe()
-        self.assertEqual(set(df_table.index), set(view_md.index))
         
     def test_get_closed_reference_study(self):
         id_ = '10343'
@@ -158,24 +128,7 @@ class TestFetch(TestPluginBase):
         self.assertEqual(set(table.ids()), set(md.index))
 
     def test_get_deblur_study(self):
-
-        id_ = '2136'
-        proc_type = 'deblur'
-        length = 100
-        debug = True
-
-        table, tax, md, tree = fetch_amplicon(id_, proc_type, 
-                                              length, debug=debug)
         
-
-    def test_fetch_phylogeny(self):
-            
-        pass
-
-    def test_fetch_taxonomy(self):
-
-        pass
-
         id_ = '10343'
         proc_type = 'deblur'
         length = 90

@@ -23,7 +23,7 @@ from q2_american_gut._type import QiitaMetadata
 
 CLASSIFIER = (Requirement.parse('q2_american_gut'),
               'q2_american_gut/assets/gg-13-8-99-515-806-nb-classifier.qza')
-GG_TREE = (Requirement.parse('q2_american_gut'), 
+GG_TREE = (Requirement.parse('q2_american_gut'),
           'q2_american_gut/assets/97_otus.tree')
 DEBUG_PHY = (Requirement.parse('q2_american_gut'),
              'q2_american_gut/assets/reference_phylogeny_tiny.qza')
