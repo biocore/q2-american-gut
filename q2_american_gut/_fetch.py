@@ -121,14 +121,6 @@ def _fetch_taxonomy(processing_type, table, threads):
 
     return tax
 
-def _get_taxonomy(table):
-    #might need test, test for a proper biom table
-    pass
-
-def _get_closed_reference_phylogeny():
-
-    pass
-
 def _fetch_phylogeny(processing_type, table, threads, debug):
     """Fetch phylogeny based on the processing type
 
@@ -175,18 +167,12 @@ def _fetch_phylogeny(processing_type, table, threads, debug):
 
     return tree
 
-def _insert_fragments(table, threads):
-    pass
-
-def _assign_taxonomy(table, threads):
-    pass
 
 def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
                    threads: int=1, debug: bool=False) -> (biom.Table,
                                                           pd.DataFrame,
                                                           pd.DataFrame,
                                                           skbio.TreeNode):
-
     if not qiita_study_id.isdigit():
         raise ValueError("ID %s is not a qiita ID" % qiita_study_id)
 
