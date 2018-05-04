@@ -101,8 +101,7 @@ def _fetch_taxonomy(processing_type, table, threads):
     -------
     FeatureData[Taxonomy]
     """
-    if processing_type == 'deblur':
-        
+    if processing_type == 'deblur': 
         from qiime2.plugins import feature_classifier
         dna_iter = _get_featuredata_from_table(table)
 
