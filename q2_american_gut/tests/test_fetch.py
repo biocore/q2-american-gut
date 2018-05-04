@@ -8,11 +8,14 @@
 
 import unittest
 
+import pandas as pd
 import biom
 import numpy as np
 import skbio
+import qiime2
 from qiime2.plugin.testing import TestPluginBase
 from q2_types.feature_data import DNAIterator
+from q2_types.tree import NewickFormat
 
 from q2_american_gut import fetch_amplicon
 from q2_american_gut._fetch import _determine_context, _get_featuredata_from_table
@@ -130,6 +133,11 @@ class TestFetch(TestPluginBase):
         table, tax, md, tree = fetch_amplicon(id_, proc_type,
                                               length, debug=debug)
 
+        table = table.view(biom.Table)
+        tax = tax.view(pd.DataFrame)
+        md = md.to_dataframe()
+        tree = tree.view(skbio.TreeNode)
+
         exp_ids = ['10343.1384a.36263',
                    '10343.2024a.36263',
                    '10343.2025a.36263',
@@ -150,6 +158,7 @@ class TestFetch(TestPluginBase):
         self.assertEqual(set(table.ids()), set(md.index))
 
     def test_get_deblur_study(self):
+<<<<<<< HEAD
         id_ = '2136'
         proc_type = 'deblur'
         length = 100
@@ -167,6 +176,38 @@ class TestFetch(TestPluginBase):
     def test_fetch_taxonomy(self):
 
         pass
+=======
+        id_ = '10343'
+        proc_type = 'deblur'
+        length = 90
+        debug = True
+
+        table, tax, md, tree = fetch_amplicon(id_, proc_type,
+                                              length, debug=debug)
+
+        table = table.view(biom.Table)
+        tax = tax.view(pd.DataFrame)
+        md = md.to_dataframe()
+        tree = tree.view(skbio.TreeNode)
+
+        # not all of the IDs make it through, perhaps too few sequence
+        exp_ids = ['10343.1384a.27499',
+                   '10343.2024a.27499',
+                   '10343.2025a.27499',
+                   '10343.2026a.27499',
+                   '10343.2161a.27499',
+                   '10343.2162a.27499',
+                   '10343.BLANK.JS6.12E.27499']
+
+        # test consistency between the outputs
+        self.assertEqual(sorted(table.ids()), sorted(exp_ids))
+        self.assertEqual(len(table.ids(axis='observation')), 338)
+        self.assertEqual(set(table.ids(axis='observation')),
+                         set(tax.index))
+        self.assertTrue(set(tax.index).issubset({n.name for n in tree.tips()}))
+        self.assertEqual(set(table.ids()), set(md.index))
+
+>>>>>>> b543fc4bb7de4535e5dd7539120b9cf14bd14cf1
 
 if __name__ == '__main__':
     unittest.main()
