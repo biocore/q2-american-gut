@@ -158,7 +158,7 @@ class TestFetch(TestPluginBase):
         self.assertEqual(set(table.ids()), set(md.index))
 
     def test_get_deblur_study(self):
-<<<<<<< HEAD
+
         id_ = '2136'
         proc_type = 'deblur'
         length = 100
@@ -168,7 +168,6 @@ class TestFetch(TestPluginBase):
                                               length, debug=debug)
         
 
-        
     def test_fetch_phylogeny(self):
             
         pass
@@ -176,7 +175,7 @@ class TestFetch(TestPluginBase):
     def test_fetch_taxonomy(self):
 
         pass
-=======
+
         id_ = '10343'
         proc_type = 'deblur'
         length = 90
@@ -207,7 +206,7 @@ class TestFetch(TestPluginBase):
         self.assertTrue(set(tax.index).issubset({n.name for n in tree.tips()}))
         self.assertEqual(set(table.ids()), set(md.index))
 
->>>>>>> b543fc4bb7de4535e5dd7539120b9cf14bd14cf1
+
 
 if __name__ == '__main__':
     unittest.main()
