@@ -8,8 +8,8 @@
 
 import pandas as pd
 import qiime2
-from q2_american_gut.plugin_setup import (plugin, QiitaMetadataFormat,
-                                          QiitaMetadata)
+from q2_american_gut.plugin_setup import plugin
+from q2_american_gut import QiitaMetadataFormat, QiitaMetadata
 
 
 @plugin.register_transformer
