@@ -9,7 +9,7 @@
 import unittest
 
 import pandas as pd
-
+import numpy as np
 import qiime2
 
 from pandas.util.testing import assert_frame_equal
@@ -37,8 +37,8 @@ class TestTransformers(TestPluginBase):
         
         c1 = ['123.456.789', 'x', 'y', '1.0']
         c2 = ['123.456.012', 'thing', '0', '2.3']
-        c3 = ['123.xxx.789', float('nan'), 'stuff', 'None']
-        c4 = ['321.xxx.789', float('nan'), 'stuff', 'None']
+        c3 = ['123.xxx.789', np.nan, 'stuff', 'None']
+        c4 = ['321.xxx.789', np.nan, 'stuff', 'None']
         cols = ['#SampleID', 'foo', 'bar', 'baz']
         exp = pd.DataFrame([c1, c2, c3, c4], columns=cols)
 
@@ -51,8 +51,8 @@ class TestTransformers(TestPluginBase):
 
         c1 = ['123.456.789', 'x', 'y', '1.0']
         c2 = ['123.456.012', 'thing', '0', '2.3']
-        c3 = ['123.xxx.789', float('nan'), 'stuff', 'None']
-        c4 = ['321.xxx.789', float('nan'), 'stuff', 'None']
+        c3 = ['123.xxx.789', np.nan, 'stuff', 'None']
+        c4 = ['321.xxx.789', np.nan, 'stuff', 'None']
         cols = ['#SampleID', 'foo', 'bar', 'baz']
         exp = pd.DataFrame([c1, c2, c3, c4], columns=cols)
         exp.set_index('#SampleID', inplace=True)
@@ -66,8 +66,8 @@ class TestTransformers(TestPluginBase):
         
         c1 = ['123.456.789', 'x', 'y', '1.0']
         c2 = ['123.456.012', 'thing', '0', '2.3']
-        c3 = ['123.xxx.789', float('nan'), 'stuff', 'None']
-        c4 = ['321.xxx.789', float('nan'), 'stuff', 'None']
+        c3 = ['123.xxx.789', np.nan, 'stuff', 'None']
+        c4 = ['321.xxx.789', np.nan, 'stuff', 'None']
         cols = ['#SampleID', 'foo', 'bar', 'baz']
         exp = pd.DataFrame([c1, c2, c3, c4], columns=cols)
         exp.set_index('#SampleID', inplace=True)

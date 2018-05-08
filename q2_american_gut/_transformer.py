@@ -42,16 +42,3 @@ def _4(data: qiime2.Metadata) -> QiitaMetadataFormat:
     with ff.open() as fh:
         md_df.to_csv(fh, sep='\t', header=True)
     return ff
-<<<<<<< HEAD
-=======
-
-
-@plugin.register_transformer
-def _5(data: qiime2.Metadata) -> QiitaMetadata:
-    pass
-
-
-@plugin.register_transformer
-def _6(data: QiitaMetadata) -> qiime2.Metadata:
-    pass
->>>>>>> 552c9ed7d62b21495194e6ee329d925a0db87851
