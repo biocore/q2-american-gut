@@ -10,11 +10,6 @@
 import unittest
 import shutil
 
-#from q2_american_gut import QiitaMetadata, QiitaMetadataDirectoryFormat,\
-#                                QiitaMetadataFormat
-#from q2_american_gut._format import QiitaMetadataFormat, \
-#                                    QiitaMetadataDirectoryFormat
-#from q2_american_gut._type import QiitaMetadata
 from q2_american_gut.plugin_setup import QiitaMetadataFormat, \
                                          QiitaMetadataDirectoryFormat
 from qiime2.plugin.testing import TestPluginBase

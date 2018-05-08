@@ -91,7 +91,7 @@ def _fetch_taxonomy(processing_type, table, threads):
     Parameters
     ----------
     processing_type : {'deblur', 'closed-reference'}
-        The processing type which determines how we obtain taxonimic detail.
+        The processing type which determines how we obtain taxonomic detail.
     table : biom.Table
         The FrequencyTable
     threads : int
@@ -101,6 +101,7 @@ def _fetch_taxonomy(processing_type, table, threads):
     -------
     FeatureData[Taxonomy]
     """
+
     if processing_type == 'deblur':
         from qiime2.plugins import feature_classifier
         dna_iter = _get_featuredata_from_table(table)
@@ -133,7 +134,7 @@ def _fetch_phylogeny(processing_type, table, threads, debug):
     threads : int
         The number of threads to use
     debug : bool, optional
-        If debug, use a small small tree for insertion to avoid spinup
+        If debug, use a small tree for insertion to avoid spinup
         time.
 
     Returns
