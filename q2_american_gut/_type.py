@@ -8,5 +8,4 @@
 
 from qiime2.plugin import SemanticType
 
-
 QiitaMetadata = SemanticType('QiitaMetadata')

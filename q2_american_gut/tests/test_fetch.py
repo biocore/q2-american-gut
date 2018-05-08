@@ -55,7 +55,7 @@ class DetermineContextTests(TestPluginBase):
     def test_context_does_not_have_trim_length(self):
         proctype = 'deblur'
         trim = 42
-
+        
         msg = "Cannot find %s-%dnt for 16S data" % (proctype, trim)
         with self.assertRaisesRegex(ValueError, msg):
             _determine_context(proctype, trim)
@@ -93,7 +93,7 @@ class TestFetch(TestPluginBase):
         with self.assertRaisesRegex(ValueError,
                                     "ID %s is not a qiita ID" % id_):
             fetch_amplicon(id_, 'deblur', 100)
-
+        
     def test_get_closed_reference_study(self):
         id_ = '10343'
         proc_type = 'closed-reference'
@@ -128,6 +128,7 @@ class TestFetch(TestPluginBase):
         self.assertEqual(set(table.ids()), set(md.index))
 
     def test_get_deblur_study(self):
+        
         id_ = '10343'
         proc_type = 'deblur'
         length = 90
@@ -157,6 +158,7 @@ class TestFetch(TestPluginBase):
                          set(tax.index))
         self.assertTrue(set(tax.index).issubset({n.name for n in tree.tips()}))
         self.assertEqual(set(table.ids()), set(md.index))
+
 
 
 if __name__ == '__main__':
