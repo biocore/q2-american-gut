@@ -15,9 +15,8 @@ from q2_types.tree import Phylogeny, Rooted
 
 import q2_american_gut
 from q2_american_gut._visualizer import report
-from q2_american_gut._type import QiitaMetadata
-from q2_american_gut._format import (QiitaMetadataFormat,
-                                     QiitaMetadataDirectoryFormat)
+from q2_american_gut import (QiitaMetadata, QiitaMetadataFormat,
+                             QiitaMetadataDirectoryFormat)
 
 
 plugin = Plugin(
