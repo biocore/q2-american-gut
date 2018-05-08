@@ -8,6 +8,7 @@
 
 import qiime2.plugin.model as model
 
+
 class QiitaMetadataFormat(model.TextFileFormat):
     def sniff(self):
         lines = []
@@ -22,6 +23,7 @@ class QiitaMetadataFormat(model.TextFileFormat):
                 return False
         return True
 
+
 QiitaMetadataDirectoryFormat = model.SingleFileDirectoryFormat(
-        'QiitaMetadataDirectoryFormat', 'qiita-metadata.tsv', 
-        QiitaMetadataFormat)
+    'QiitaMetadataDirectoryFormat', 'qiita-metadata.tsv',
+    QiitaMetadataFormat)

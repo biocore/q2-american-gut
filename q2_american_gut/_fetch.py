@@ -9,9 +9,7 @@
 from pkg_resources import Requirement, resource_filename
 
 import qiime2
-from q2_types.feature_data import (DNAIterator,
-                                   AlignedDNASequencesDirectoryFormat)
-from q2_types.tree import NewickFormat
+from q2_types.feature_data import DNAIterator
 import biom
 import pandas as pd
 import skbio
@@ -24,11 +22,11 @@ from q2_american_gut._type import QiitaMetadata
 CLASSIFIER = (Requirement.parse('q2_american_gut'),
               'q2_american_gut/assets/gg-13-8-99-515-806-nb-classifier.qza')
 GG_TREE = (Requirement.parse('q2_american_gut'),
-          'q2_american_gut/assets/97_otus.tree')
+           'q2_american_gut/assets/97_otus.tree')
 DEBUG_PHY = (Requirement.parse('q2_american_gut'),
              'q2_american_gut/assets/reference_phylogeny_tiny.qza')
 DEBUG_ALN = (Requirement.parse('q2_american_gut'),
-            'q2_american_gut/assets/reference_alignment_tiny.qza')
+             'q2_american_gut/assets/reference_alignment_tiny.qza')
 
 
 def _determine_context(processing_type, trim_length):
@@ -63,14 +61,15 @@ def _determine_context(processing_type, trim_length):
         # TODO: the release candidate version of the qiita redbiom database
         # has updated context names which include the reference used.
         # if we're closed reference, restrict to greengenes as a reference
-        #if processing_type != 'deblur' and 'greengenes' not in test_ctx:
-        #    continue
+        # if processing_type != 'deblur' and 'greengenes' not in test_ctx:
+        #     continue
 
         if processing_type in test_ctx and "%dnt" % trim_length in test_ctx:
             found = context
 
     if found is None:
-        msg = "Cannot find %s-%dnt for 16S data" % (processing_type, trim_length)
+        msg = "Cannot find %s-%dnt for 16S data" % (processing_type,
+                                                    trim_length)
         raise ValueError(msg)
 
     return found
@@ -81,8 +80,9 @@ def _get_featuredata_from_table(table):
     if table.is_empty():
         raise ValueError("No features")
 
-    return DNAIterator((skbio.DNA(i, metadata={'id': i})
-                                  for i in table.ids(axis='observation')))
+    it = (skbio.DNA(i, metadata={'id': i})
+          for i in table.ids(axis='observation'))
+    return DNAIterator(it)
 
 
 def _fetch_taxonomy(processing_type, table, threads):
@@ -102,7 +102,7 @@ def _fetch_taxonomy(processing_type, table, threads):
     FeatureData[Taxonomy]
     """
 
-    if processing_type == 'deblur': 
+    if processing_type == 'deblur':
         from qiime2.plugins import feature_classifier
         dna_iter = _get_featuredata_from_table(table)
 
@@ -120,6 +120,7 @@ def _fetch_taxonomy(processing_type, table, threads):
         tax = qiime2.Artifact.import_data('FeatureData[Taxonomy]', tax_table)
 
     return tax
+
 
 def _fetch_phylogeny(processing_type, table, threads, debug):
     """Fetch phylogeny based on the processing type
@@ -177,7 +178,7 @@ def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
         raise ValueError("ID %s is not a qiita ID" % qiita_study_id)
 
     context = _determine_context(processing_type, trim_length)
-    
+
     query = "where qiita_study_id==%s" % qiita_study_id
     samples = redbiom.search.metadata_full(query)
 
@@ -188,16 +189,16 @@ def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
         # just take top 10 but be consistent about which 10 are obtained
         samples = set(sorted(samples)[:10])
 
-    table, ambiguity_map_tab = redbiom.fetch.data_from_samples(context, samples)
-    md, ambiguity_map_md = redbiom.fetch.sample_metadata(samples, context=context)
+    table, ambiguity_map_tab = redbiom.fetch.data_from_samples(context,
+                                                               samples)
+    md, ambiguity_map_md = redbiom.fetch.sample_metadata(samples,
+                                                         context=context)
     md.set_index('#SampleID', inplace=True)
 
     taxonomy = _fetch_taxonomy(processing_type, table, threads)
     phylogeny = _fetch_phylogeny(processing_type, table, threads, debug)
 
     md = qiime2.Artifact.import_data(QiitaMetadata, md)
-    md = qiime2.Metadata.from_artifact(md)
     table = qiime2.Artifact.import_data('FeatureTable[Frequency]', table)
 
     return table, taxonomy, md, phylogeny
-

@@ -6,8 +6,7 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 import importlib
-import biom
-from qiime2.plugin import Plugin, Int, Str, Choices, Metadata, Bool, Range, List
+from qiime2.plugin import Plugin, Int, Str, Choices, Metadata, Bool, List
 from q2_types.feature_table import FeatureTable, Frequency
 from q2_types.feature_data import FeatureData, Taxonomy
 from q2_types.sample_data import AlphaDiversity, SampleData
@@ -35,8 +34,10 @@ plugin = Plugin(
 plugin.register_formats(QiitaMetadataFormat, QiitaMetadataDirectoryFormat)
 
 plugin.register_semantic_types(QiitaMetadata)
-plugin.register_semantic_type_to_format(QiitaMetadata, \
-                                artifact_format=QiitaMetadataDirectoryFormat)
+plugin.register_semantic_type_to_format(
+    QiitaMetadata,
+    artifact_format=QiitaMetadataDirectoryFormat
+)
 
 
 # TODO: add support for shotgun retrieval
