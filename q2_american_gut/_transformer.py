@@ -24,6 +24,7 @@ def _1(data: pd.DataFrame) -> QiitaMetadataFormat:
 def _2(ff: QiitaMetadataFormat) -> pd.DataFrame:
     with ff.open() as fh:
         df = pd.read_csv(fh, sep='\t', dtype=object)
+        df.set_index('#SampleID', inplace=True)
         return df
 
 

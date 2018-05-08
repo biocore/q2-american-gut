@@ -31,9 +31,9 @@ class TestTransformers(TestPluginBase):
         assert_frame_equal(exp, obs)
     
     def test_qiita_metadata_format_to_pd_dataframe(self):
-        filename = 'qiita-metadata.tsv'
+        
         _, obs = self.transform_format(QiitaMetadataFormat, pd.DataFrame,
-                                       filename)
+                                       'qiita-metadata.tsv')
         
         c1 = ['123.456.789', 'x', 'y', '1.0']
         c2 = ['123.456.012', 'thing', '0', '2.3']
@@ -41,13 +41,13 @@ class TestTransformers(TestPluginBase):
         c4 = ['321.xxx.789', np.nan, 'stuff', 'None']
         cols = ['#SampleID', 'foo', 'bar', 'baz']
         exp = pd.DataFrame([c1, c2, c3, c4], columns=cols)
-        
+        exp.set_index('#SampleID', inplace=True)
         assert_frame_equal(exp, obs)
     
     def test_qiita_metadata_format_to_metadata(self):
-        filename = 'qiita-metadata.tsv'
+        
         _, obs = self.transform_format(QiitaMetadataFormat, qiime2.Metadata,
-                                       filename)
+                                       'qiita-metadata.tsv')
 
         c1 = ['123.456.789', 'x', 'y', '1.0']
         c2 = ['123.456.012', 'thing', '0', '2.3']
