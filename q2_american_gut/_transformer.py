@@ -7,11 +7,10 @@
 # ----------------------------------------------------------------------------
 
 import pandas as pd
-import numpy as np
-import qiime2 
-from qiime2.plugin import Metadata
-from q2_american_gut.plugin_setup import plugin, QiitaMetadataFormat, \
-                                    QiitaMetadata
+import qiime2
+from q2_american_gut.plugin_setup import (plugin, QiitaMetadataFormat,
+                                          QiitaMetadata)
+
 
 @plugin.register_transformer
 def _1(data: pd.DataFrame) -> QiitaMetadataFormat:
@@ -20,11 +19,13 @@ def _1(data: pd.DataFrame) -> QiitaMetadataFormat:
         data.to_csv(fh, sep='\t', header=True)
     return ff
 
+
 @plugin.register_transformer
 def _2(ff: QiitaMetadataFormat) -> pd.DataFrame:
     with ff.open() as fh:
         df = pd.read_csv(fh, sep='\t', dtype=object)
         return df
+
 
 @plugin.register_transformer
 def _3(ff: QiitaMetadataFormat) -> qiime2.Metadata:
@@ -32,6 +33,7 @@ def _3(ff: QiitaMetadataFormat) -> qiime2.Metadata:
         df = pd.read_csv(fh, sep='\t', dtype='object')
         df.set_index('#SampleID', inplace=True)
         return qiime2.Metadata(df)
+
 
 @plugin.register_transformer
 def _4(data: qiime2.Metadata) -> QiitaMetadataFormat:
@@ -41,13 +43,12 @@ def _4(data: qiime2.Metadata) -> QiitaMetadataFormat:
         md_df.to_csv(fh, sep='\t', header=True)
     return ff
 
+
 @plugin.register_transformer
 def _5(data: qiime2.Metadata) -> QiitaMetadata:
-    
     pass
+
 
 @plugin.register_transformer
 def _6(data: QiitaMetadata) -> qiime2.Metadata:
-
     pass
-
