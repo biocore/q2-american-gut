@@ -32,7 +32,7 @@ def _post(obj):
     # source the taxonomy classifier (for assignments for deblur sequences)
     src_url = ('https://data.qiime2.org/%s/common/'
                'gg-13-8-99-515-806-nb-classifier.qza' % version)
-    src_url = str(src_url)
+    print(src_url)
     out_f = os.path.join(assets_dir, 'gg-13-8-99-515-806-nb-classifier.qza')
 
     req = urllib.request.Request(src_url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -42,7 +42,7 @@ def _post(obj):
     # source the Greengenes tree (for closed reference data)
     src_url = ('ftp://ftp.microbio.me/greengenes_release/'
                'gg_13_8_otus/trees/97_otus.tree')
-    src_url = str(src_url)
+    print(src_url)
     out_f = os.path.join(assets_dir, '97_otus.tree')
 
     req = urllib.request.Request(src_url, headers={'User-Agent': 'Mozilla/5.0'})
