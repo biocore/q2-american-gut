@@ -16,7 +16,6 @@ from pandas.util.testing import assert_frame_equal
 from q2_american_gut.plugin_setup import QiitaMetadataFormat, QiitaMetadata
 from qiime2.plugin.testing import TestPluginBase
 
-# want metdata to format, format to metadata, qiitameta to meta and meta to qiita
 class TestTransformers(TestPluginBase):
     package = "q2_american_gut.tests"
 
