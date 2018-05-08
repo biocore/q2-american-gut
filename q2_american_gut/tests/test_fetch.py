@@ -102,10 +102,13 @@ class TestFetch(TestPluginBase):
 
         table, tax, md, tree = fetch_amplicon(id_, proc_type,
                                               length, debug=debug)
+        table, tax, md, tree = fetch_amplicon(id_, proc_type,
+                                              length, debug=debug)
 
         table = table.view(biom.Table)
         tax = tax.view(pd.DataFrame)
-        md = md.to_dataframe()
+        md = md.view(pd.DataFrame)
+        md.set_index('#SampleID', inplace=True)
         tree = tree.view(skbio.TreeNode)
 
         exp_ids = ['10343.1384a.36263',
@@ -139,7 +142,8 @@ class TestFetch(TestPluginBase):
 
         table = table.view(biom.Table)
         tax = tax.view(pd.DataFrame)
-        md = md.to_dataframe()
+        md = md.view(pd.DataFrame)
+        md.set_index('#SampleID', inplace=True)
         tree = tree.view(skbio.TreeNode)
 
         # not all of the IDs make it through, perhaps too few sequence
