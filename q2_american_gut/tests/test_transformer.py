@@ -41,7 +41,7 @@ class TestTransformers(TestPluginBase):
         c4 = ['321.xxx.789', np.nan, 'stuff', 'None']
         cols = ['#SampleID', 'foo', 'bar', 'baz']
         exp = pd.DataFrame([c1, c2, c3, c4], columns=cols)
-
+        
         assert_frame_equal(exp, obs)
     
     def test_qiita_metadata_format_to_metadata(self):
