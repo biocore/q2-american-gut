@@ -18,6 +18,7 @@ install:
   - pip install -q flake8 coveralls
   - pip install -q https://github.com/qiime2/q2lint/archive/master.zip
   - pip install -q https://github.com/biocore/redbiom/archive/v0.1.1.zip
+  - conda install -c biocore -c bioconda fragment-insertion
   - pip install -q git+https://github.com/biocore/q2-fragment-insertion.git
   - make install
 script:
