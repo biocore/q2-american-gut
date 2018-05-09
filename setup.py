@@ -25,7 +25,7 @@ def _post(obj):
         os.mkdir(assets_dir)
 
     version = versioneer.get_version()
-    if 'dirty' in version:
+    if 'dirty' in version or 'untagged' in version:
         # we're operating in dev
         version = '2018.2'
 
