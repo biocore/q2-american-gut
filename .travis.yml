@@ -23,6 +23,6 @@ install:
   - make install
 script:
   - make lint
-  - make test-cov
+  - make test
 after_success:
   - coveralls
