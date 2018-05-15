@@ -13,8 +13,9 @@ import numpy as np
 import qiime2
 
 from pandas.util.testing import assert_frame_equal
-from q2_american_gut.plugin_setup import QiitaMetadataFormat, QiitaMetadata
+from q2_american_gut.plugin_setup import QiitaMetadataFormat
 from qiime2.plugin.testing import TestPluginBase
+
 
 class TestTransformers(TestPluginBase):
     package = "q2_american_gut.tests"
@@ -29,12 +30,12 @@ class TestTransformers(TestPluginBase):
         obs = transformer(exp)
         obs = pd.DataFrame.from_csv(str(obs), sep='\t')
         assert_frame_equal(exp, obs)
-    
+
     def test_qiita_metadata_format_to_pd_dataframe(self):
-        
+
         _, obs = self.transform_format(QiitaMetadataFormat, pd.DataFrame,
                                        'qiita-metadata.tsv')
-        
+
         c1 = ['123.456.789', 'x', 'y', '1.0']
         c2 = ['123.456.012', 'thing', '0', '2.3']
         c3 = ['123.xxx.789', np.nan, 'stuff', 'None']
@@ -43,9 +44,9 @@ class TestTransformers(TestPluginBase):
         exp = pd.DataFrame([c1, c2, c3, c4], columns=cols)
         exp.set_index('#SampleID', inplace=True)
         assert_frame_equal(exp, obs)
-    
+
     def test_qiita_metadata_format_to_metadata(self):
-        
+
         _, obs = self.transform_format(QiitaMetadataFormat, qiime2.Metadata,
                                        'qiita-metadata.tsv')
 
@@ -60,10 +61,11 @@ class TestTransformers(TestPluginBase):
         exp_md = qiime2.Metadata(exp)
 
         self.assertEqual(obs, exp_md)
-    
+
     def test_metadata_to_qiita_metadata_format(self):
-        transformer = self.get_transformer(qiime2.Metadata, QiitaMetadataFormat)
-        
+        transformer = self.get_transformer(qiime2.Metadata,
+                                           QiitaMetadataFormat)
+
         c1 = ['123.456.789', 'x', 'y', '1.0']
         c2 = ['123.456.012', 'thing', '0', '2.3']
         c3 = ['123.xxx.789', np.nan, 'stuff', 'None']

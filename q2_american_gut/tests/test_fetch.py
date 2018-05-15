@@ -12,15 +12,11 @@ import pandas as pd
 import biom
 import numpy as np
 import skbio
-import qiime2
 from qiime2.sdk import Context
 from qiime2.plugin.testing import TestPluginBase
-from q2_types.feature_data import DNAIterator
-from q2_types.tree import NewickFormat
 from q2_american_gut import fetch_amplicon
 from q2_american_gut._fetch import _determine_context, \
                                    _get_featuredata_from_table
-
 
 
 class DNAIteratorTests(TestPluginBase):
@@ -56,7 +52,7 @@ class DetermineContextTests(TestPluginBase):
     def test_context_does_not_have_trim_length(self):
         proctype = 'deblur'
         trim = 42
-        
+
         msg = "Cannot find %s-%dnt for 16S data" % (proctype, trim)
         with self.assertRaisesRegex(ValueError, msg):
             _determine_context(proctype, trim)
@@ -75,10 +71,19 @@ class DetermineContextTests(TestPluginBase):
         self.assertIn('closed-reference', ctx.lower())
         self.assertIn('100nt', ctx.lower())
 
+    def test_fetch_454_study(self):
+        proctype = 'closed-reference'
+        trim = 100
+        instrument = 'flx'
+        ctx = _determine_context(proctype, trim, instrument)
+        self.assertIn('closed-reference', ctx.lower())
+        self.assertIn('100nt', ctx.lower())
+        self.assertIn('flx', ctx.lower())
+
 
 class TestFetch(TestPluginBase):
     package = "q2_american_gut.tests"
-    
+
     def setup(self):
         self.fetch_amplicon = self.plugin.pipelines['fetch_amplicon']
 
@@ -97,7 +102,7 @@ class TestFetch(TestPluginBase):
         with self.assertRaisesRegex(ValueError,
                                     "ID %s is not a qiita ID" % id_):
             fetch_amplicon(Context(), id_, 'deblur', 100)
-        
+
     def test_get_closed_reference_study(self):
         ctx = Context()
         id_ = '10343'
@@ -111,7 +116,6 @@ class TestFetch(TestPluginBase):
         table = table.view(biom.Table)
         tax = tax.view(pd.DataFrame)
         md = md.view(pd.DataFrame)
-        #md.set_index('#SampleID', inplace=True)
         tree = tree.view(skbio.TreeNode)
 
         exp_ids = ['10343.1384a.36263',
@@ -134,7 +138,6 @@ class TestFetch(TestPluginBase):
         self.assertEqual(set(table.ids()), set(md.index))
 
     def test_get_deblur_study(self):
-        
         ctx = Context()
         id_ = '10343'
         proc_type = 'deblur'
@@ -147,7 +150,6 @@ class TestFetch(TestPluginBase):
         table = table.view(biom.Table)
         tax = tax.view(pd.DataFrame)
         md = md.view(pd.DataFrame)
-        #md.set_index('#SampleID', inplace=True)
         tree = tree.view(skbio.TreeNode)
 
         # not all of the IDs make it through, perhaps too few sequence
@@ -168,7 +170,5 @@ class TestFetch(TestPluginBase):
         self.assertEqual(set(table.ids()), set(md.index))
 
 
-
 if __name__ == '__main__':
     unittest.main()
-

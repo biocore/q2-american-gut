@@ -10,7 +10,6 @@ from pkg_resources import Requirement, resource_filename
 
 import qiime2
 from q2_types.feature_data import DNAIterator
-import biom
 import pandas as pd
 import skbio
 import redbiom.search
@@ -29,7 +28,7 @@ DEBUG_ALN = (Requirement.parse('q2_american_gut'),
              'q2_american_gut/assets/reference_alignment_tiny.qza')
 
 
-def _determine_context(processing_type, trim_length):
+def _determine_context(processing_type, trim_length, instrument='illumina'):
     """Determine the processing context in redbiom to use
 
     Parameters
@@ -38,6 +37,9 @@ def _determine_context(processing_type, trim_length):
         The sequence processing type to look for.
     trim_length : int
         The fragment length to look for.
+    instrument : str, optional
+        The instrument type to select. By default, we'll use the illumina
+        platform.
 
     Notes
     -----
@@ -56,6 +58,9 @@ def _determine_context(processing_type, trim_length):
 
         # american gut amplicon data are only 16S v4
         if '16s' not in test_ctx or 'v4' not in test_ctx:
+            continue
+
+        if instrument not in test_ctx:
             continue
 
         # TODO: the release candidate version of the qiita redbiom database
@@ -168,8 +173,7 @@ def _fetch_phylogeny(processing_type, table, threads, debug):
 
 def fetch_amplicon(ctx, qiita_study_id, processing_type, trim_length,
                    threads=1, debug=False):
-    
-    
+
     if not qiita_study_id.isdigit():
         raise ValueError("ID %s is not a qiita ID" % qiita_study_id)
 
@@ -190,6 +194,8 @@ def fetch_amplicon(ctx, qiita_study_id, processing_type, trim_length,
 
     table, ambiguity_map_tab = redbiom.fetch.data_from_samples(context,
                                                                samples)
+
+    print("CONTEXT IS ", context)
     md, ambiguity_map_md = redbiom.fetch.sample_metadata(samples,
                                                          context=context)
     md.set_index('#SampleID', inplace=True)
