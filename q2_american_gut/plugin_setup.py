@@ -42,26 +42,19 @@ plugin.register_semantic_type_to_format(
 # TODO: add support for shotgun retrieval
 # TODO: add support for metabolomic retrieval
 # TODO: add support for HMP reference genome hits
-plugin.methods.register_function(
+# TODO: register as pipeline
+
+plugin.pipelines.register_function(
     function=q2_american_gut.fetch_amplicon,
     name='Fetch amplicon data',
     description=('This method obtains study amplicon data from Qiita.'),
     inputs={},
-    input_descriptions={},
     parameters={
         'qiita_study_id': Str,
-        'processing_type': Str % Choices(['deblur', 'closed-reference']),
+        'processing_type': Str  % Choices(['deblur', 'closed-reference']),
         'trim_length': Str % Choices(['90', '100', '150']),
         'threads': Int,
         'debug': Bool
-    },
-    parameter_descriptions={
-        'qiita_study_id': 'The study to obtain',
-        'processing_type': 'How the OTUs were assessed',
-        'trim_length': 'The sequence trim length to use',
-        'threads': ('Number of parallel downloads to perform.'),
-        'debug': ('Whether to operate in debug mode. If debug mode, a small '
-                  'subset of data are fetched.')
     },
     outputs=[
         ('feature_table', FeatureTable[Frequency]),
@@ -69,14 +62,24 @@ plugin.methods.register_function(
         ('sample_metadata', QiitaMetadata),
         ('phylogeny', Phylogeny[Rooted])
     ],
+    
+    input_descriptions={},
+    parameter_descriptions={
+    'qiita_study_id': 'The study to obtain',
+    'processing_type': 'How the OTUs were assessed',
+    'trim_length': 'The sequence trim length to use',
+    'threads': ('Number of parallel downloads to perform.'),
+    'debug': ('Whether to operate in debug mode. If debug mode, a small '
+              'subset of data are fetched.')
+    },
     output_descriptions={
         'feature_table': "A feature table of the sample data",
         'feature_taxonomy': "Feature taxonomy information",
         'sample_metadata': "Feature metadata",
         'phylogeny': "A phylogeny relating the features"
     }
-)
 
+)
 
 plugin.visualizers.register_function(
     function=report,

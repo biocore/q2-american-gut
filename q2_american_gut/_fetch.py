@@ -166,11 +166,10 @@ def _fetch_phylogeny(processing_type, table, threads, debug):
     return tree
 
 
-def fetch_amplicon(qiita_study_id: str, processing_type: str, trim_length: int,
-                   threads: int=1, debug: bool=False) -> (biom.Table,
-                                                          pd.DataFrame,
-                                                          pd.DataFrame,
-                                                          skbio.TreeNode):
+def fetch_amplicon(ctx, qiita_study_id, processing_type, trim_length,
+                   threads=1, debug=False):
+    
+    
     if not qiita_study_id.isdigit():
         raise ValueError("ID %s is not a qiita ID" % qiita_study_id)
 
