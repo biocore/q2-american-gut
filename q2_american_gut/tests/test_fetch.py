@@ -18,7 +18,8 @@ from qiime2.plugin.testing import TestPluginBase
 from q2_types.feature_data import DNAIterator
 from q2_types.tree import NewickFormat
 from q2_american_gut import fetch_amplicon
-from q2_american_gut._fetch import _determine_context, _get_featuredata_from_table
+from q2_american_gut._fetch import _determine_context, \
+                                   _get_featuredata_from_table
 
 
 
