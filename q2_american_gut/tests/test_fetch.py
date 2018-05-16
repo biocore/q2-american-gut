@@ -105,9 +105,9 @@ class TestFetch(TestPluginBase):
 
     def test_get_closed_reference_study(self):
         ctx = Context()
-        id_ = '10343'
+        id_ = '2136'
         proc_type = 'closed-reference'
-        length = 100
+        length = 90
         debug = True
 
         table, tax, md, tree = fetch_amplicon(ctx, id_, proc_type,
@@ -118,20 +118,19 @@ class TestFetch(TestPluginBase):
         md = md.view(pd.DataFrame)
         tree = tree.view(skbio.TreeNode)
 
-        exp_ids = ['10343.1384a.36263',
-                   '10343.2024a.36263',
-                   '10343.2025a.36263',
-                   '10343.2026a.36263',
-                   '10343.2160a.36263',
-                   '10343.2161a.36263',
-                   '10343.2162a.36263',
-                   '10343.BLANK.JS6.12E.36263',
-                   '10343.BLANK.JS6.12F.36263',
-                   '10343.BLANK.JS6.12G.36263']
-
+        exp_ids = ['2136.000006143.47612',
+                   '2136.000006144.47612',
+                   '2136.000006145.47612',
+                   '2136.000006146.47612',
+                   '2136.000006147.47612',
+                   '2136.000006149.47612',
+                   '2136.000006150.47612',
+                   '2136.000006152.47612',
+                   '2136.000006153.47612',
+                   '2136.000006155.47612']
         # test consistency between the outputs
         self.assertEqual(sorted(table.ids()), sorted(exp_ids))
-        self.assertEqual(len(table.ids(axis='observation')), 826)
+        self.assertEqual(len(table.ids(axis='observation')), 1402)
         self.assertEqual(set(table.ids(axis='observation')),
                          set(tax.index))
         self.assertTrue(set(tax.index).issubset({n.name for n in tree.tips()}))

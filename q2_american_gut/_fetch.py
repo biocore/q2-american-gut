@@ -57,7 +57,7 @@ def _determine_context(processing_type, trim_length, instrument='illumina'):
         test_ctx = context.lower()
 
         # american gut amplicon data are only 16S v4
-        if '16s' not in test_ctx or 'v4' not in test_ctx:
+        if '16s' not in test_ctx or '-v4-' not in test_ctx:
             continue
 
         if instrument not in test_ctx:
@@ -195,7 +195,6 @@ def fetch_amplicon(ctx, qiita_study_id, processing_type, trim_length,
     table, ambiguity_map_tab = redbiom.fetch.data_from_samples(context,
                                                                samples)
 
-    print("CONTEXT IS ", context)
     md, ambiguity_map_md = redbiom.fetch.sample_metadata(samples,
                                                          context=context)
     md.set_index('#SampleID', inplace=True)
