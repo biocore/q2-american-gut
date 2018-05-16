@@ -62,15 +62,15 @@ plugin.pipelines.register_function(
         ('sample_metadata', QiitaMetadata),
         ('phylogeny', Phylogeny[Rooted])
     ],
-    
     input_descriptions={},
     parameter_descriptions={
-    'qiita_study_id': 'The study to obtain',
-    'processing_type': 'How the OTUs were assessed',
-    'trim_length': 'The sequence trim length to use',
-    'threads': ('Number of parallel downloads to perform.'),
-    'debug': ('Whether to operate in debug mode. If debug mode, a small '
-              'subset of data are fetched.')
+        'qiita_study_id': 'The study to obtain',
+        'processing_type': 'How the OTUs were assessed',
+        'trim_length': 'The sequence trim length to use',
+        'threads': ('Number of parallel downloads to perform.'),
+        'debug': ('Whether to operate in debug mode. If debug mode, a small '
+                  'subset of data are fetched.')
+
     },
     output_descriptions={
         'feature_table': "A feature table of the sample data",

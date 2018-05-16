@@ -15,6 +15,7 @@ from q2_american_gut.plugin_setup import QiitaMetadataFormat, \
 from qiime2.plugin.testing import TestPluginBase
 from qiime2.plugin import ValidationError
 
+
 class TestFormats(TestPluginBase):
     package = "q2_american_gut.tests"
 
@@ -30,7 +31,7 @@ class TestFormats(TestPluginBase):
 
         with self.assertRaisesRegex(ValidationError, 'QiitaMetadataFormat'):
             format.validate()
-    
+
     def test_qiita_metadata_dir_fmt_validate_positive(self):
         filepath = self.get_data_path('qiita-metadata.tsv')
         shutil.copy(filepath, self.temp_dir.name)
