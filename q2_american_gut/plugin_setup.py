@@ -51,7 +51,7 @@ plugin.pipelines.register_function(
     inputs={},
     parameters={
         'qiita_study_id': Str,
-        'processing_type': Str  % Choices(['deblur', 'closed-reference']),
+        'processing_type': Str % Choices(['deblur', 'closed-reference']),
         'trim_length': Str % Choices(['90', '100', '150']),
         'threads': Int,
         'debug': Bool
@@ -88,7 +88,7 @@ plugin.visualizers.register_function(
         'table': FeatureTable[Frequency],
         'pcoa': PCoAResults,
         'alpha': SampleData[AlphaDiversity]
-        },
+    },
     parameters={'metadata': Metadata,
                 'samples': List[Str]},
     input_descriptions={
