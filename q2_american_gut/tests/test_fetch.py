@@ -16,8 +16,8 @@ import skbio
 from qiime2.sdk import Context
 from qiime2.plugin.testing import TestPluginBase
 from q2_american_gut import fetch_amplicon
-from q2_american_gut._fetch import _determine_context, \
-                                   _get_featuredata_from_table
+from q2_american_gut._fetch import _determine_context,\
+    _get_featuredata_from_table
 
 
 class DNAIteratorTests(TestPluginBase):
@@ -84,12 +84,6 @@ class DetermineContextTests(TestPluginBase):
 
 class TestFetch(TestPluginBase):
     package = "q2_american_gut.tests"
-    
-    def setup(self):
-        self.fetch_amplicon = self.plugin.pipelines['fetch_amplicon']
-
-    def setup(self):
-        self.fetch_amplicon = self.plugin.pipelines['fetch_amplicon']
 
     def test_non_existant_study_id(self):
         id_ = "99999999999999"
