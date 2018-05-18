@@ -12,6 +12,7 @@ import pandas as pd
 import biom
 import numpy as np
 import skbio
+
 from qiime2.sdk import Context
 from qiime2.plugin.testing import TestPluginBase
 from q2_american_gut import fetch_amplicon
@@ -83,6 +84,9 @@ class DetermineContextTests(TestPluginBase):
 
 class TestFetch(TestPluginBase):
     package = "q2_american_gut.tests"
+    
+    def setup(self):
+        self.fetch_amplicon = self.plugin.pipelines['fetch_amplicon']
 
     def setup(self):
         self.fetch_amplicon = self.plugin.pipelines['fetch_amplicon']
@@ -116,6 +120,7 @@ class TestFetch(TestPluginBase):
         table = table.view(biom.Table)
         tax = tax.view(pd.DataFrame)
         md = md.view(pd.DataFrame)
+
         tree = tree.view(skbio.TreeNode)
 
         exp_ids = ['2136.000006143.47612',
