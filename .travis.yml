@@ -1,6 +1,5 @@
 dist: trusty
 sudo: false
-dist: trusty
 language: python
 before_install:
   - export MPLBACKEND='Agg'
@@ -13,14 +12,18 @@ before_install:
   - conda info -a
 install:
   - wget -q https://raw.githubusercontent.com/qiime2/environment-files/master/latest/staging/qiime2-latest-py35-linux-conda.yml
+  - bash modify_install.sh
   - conda env create -q -n test-env --file qiime2-latest-py35-linux-conda.yml
   - source activate test-env
   - conda install -q pytest-cov
   - pip install -q flake8 coveralls
   - pip install -q https://github.com/qiime2/q2lint/archive/master.zip
+  - pip install -q https://github.com/biocore/redbiom/archive/v0.1.1.zip
+  - conda install -c biocore -c bioconda fragment-insertion
+  - pip install -q git+https://github.com/biocore/q2-fragment-insertion.git
   - make install
 script:
   - make lint
-  - make test-cov
+  - make test
 after_success:
   - coveralls

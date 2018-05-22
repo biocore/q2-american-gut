@@ -5,16 +5,18 @@
 #
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
-
-import biom
-from qiime2.plugin import Plugin, Metadata, List, Str
+import importlib
+from qiime2.plugin import Plugin, Int, Str, Choices, Metadata, Bool, List
 from q2_types.feature_table import FeatureTable, Frequency
 from q2_types.feature_data import FeatureData, Taxonomy
 from q2_types.sample_data import AlphaDiversity, SampleData
 from q2_types.ordination import PCoAResults
-from ._visualizer import report
+from q2_types.tree import Phylogeny, Rooted
 
 import q2_american_gut
+from q2_american_gut._visualizer import report
+from q2_american_gut import (QiitaMetadata, QiitaMetadataFormat,
+                             QiitaMetadataDirectoryFormat)
 
 
 plugin = Plugin(
@@ -28,24 +30,56 @@ plugin = Plugin(
     citation_text='https://doi.org/10.1101/277970'
 )
 
+plugin.register_formats(QiitaMetadataFormat, QiitaMetadataDirectoryFormat)
 
-def dummy(foo: biom.Table) -> biom.Table:
-    return foo
-
-
-plugin.methods.register_function(
-    function=dummy,
-    inputs={'foo': FeatureTable[Frequency]},
-    parameters={},
-    outputs=[('bar', FeatureTable[Frequency]), ],
-    input_descriptions={
-        'foo': "Same same"
-    },
-    output_descriptions={'bar': 'Same same'},
-    name='A dummy placeholder',
-    description="A dummy placeholder"
+plugin.register_semantic_types(QiitaMetadata)
+plugin.register_semantic_type_to_format(
+    QiitaMetadata,
+    artifact_format=QiitaMetadataDirectoryFormat
 )
 
+
+# TODO: add support for shotgun retrieval
+# TODO: add support for metabolomic retrieval
+# TODO: add support for HMP reference genome hits
+# TODO: register as pipeline
+
+plugin.pipelines.register_function(
+    function=q2_american_gut.fetch_amplicon,
+    name='Fetch amplicon data',
+    description=('This method obtains study amplicon data from Qiita.'),
+    inputs={},
+    parameters={
+        'qiita_study_id': Str,
+        'processing_type': Str % Choices(['deblur', 'closed-reference']),
+        'trim_length': Str % Choices(['90', '100', '150']),
+        'threads': Int,
+        'debug': Bool
+    },
+    outputs=[
+        ('feature_table', FeatureTable[Frequency]),
+        ('feature_taxonomy', FeatureData[Taxonomy]),
+        ('sample_metadata', QiitaMetadata),
+        ('phylogeny', Phylogeny[Rooted])
+    ],
+    input_descriptions={},
+    parameter_descriptions={
+        'qiita_study_id': 'The study to obtain',
+        'processing_type': 'How the OTUs were assessed',
+        'trim_length': 'The sequence trim length to use',
+        'threads': ('Number of parallel downloads to perform.'),
+        'debug': ('Whether to operate in debug mode. If debug mode, a small '
+                  'subset of data are fetched.')
+
+    },
+    output_descriptions={
+        'feature_table': "A feature table of the sample data",
+        'feature_taxonomy': "Feature taxonomy information",
+        'sample_metadata': "Feature metadata",
+        'phylogeny': "A phylogeny relating the features"
+    }
+
+)
 
 plugin.visualizers.register_function(
     function=report,
@@ -54,7 +88,7 @@ plugin.visualizers.register_function(
         'table': FeatureTable[Frequency],
         'pcoa': PCoAResults,
         'alpha': SampleData[AlphaDiversity]
-        },
+    },
     parameters={'metadata': Metadata,
                 'samples': List[Str]},
     input_descriptions={
@@ -67,3 +101,4 @@ plugin.visualizers.register_function(
     name='Generate AGP report.',
     description='none'
 )
+importlib.import_module('q2_american_gut._transformer')

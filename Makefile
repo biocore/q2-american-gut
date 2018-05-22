@@ -1,7 +1,7 @@
 .PHONY: all lint test test-cov install dev
 
 lint:
-	flake8
+	flake8 --ignore=E999 q2_american_gut setup.py
 
 test: all
 	py.test
