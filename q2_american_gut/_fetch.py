@@ -116,13 +116,16 @@ def _fetch_taxonomy(processing_type, table, threads):
         tax, = feature_classifier.methods.classify_sklearn(reads,
                                                            classifier,
                                                            n_jobs=threads)
-    else:
+    elif processing_type == 'closed-reference':
         tax_table = pd.DataFrame([(i, m['taxonomy'], 1.0)
                                   for v, i, m in table.iter(axis='observation',
                                                             dense=False)],
                                  columns=['Feature ID', 'Taxon', 'Confidence'])
         tax_table.set_index('Feature ID', inplace=True)
         tax = qiime2.Artifact.import_data('FeatureData[Taxonomy]', tax_table)
+    else:
+        raise ValueError("Unrecognized processing_type: {0}".format(
+            processing_type))
 
     return tax
 
@@ -173,6 +176,34 @@ def _fetch_phylogeny(processing_type, table, threads, debug):
 
 def fetch_amplicon(ctx, qiita_study_id, processing_type, trim_length,
                    threads=1, debug=False):
+    """
+    Parameters
+    ----------
+    ctx: qiime2.sdk.Context
+        The QIIME2 (note: NOT redbiom) context; is required first parameter of
+        any function that defines a QIIME2 pipeline
+    qiita_study_id: str
+        A string containing a qiita study id; should be a digit >= 1
+    processing_type : {'deblur', 'closed-reference'}
+        The processing type which determines how we resolve a phylogeny.
+    trim_length : int
+        The fragment length to look for.
+    threads : int
+        The number of threads to use
+    debug : bool, optional
+        If debug, use a small tree for insertion to avoid spinup
+        time.
+
+    Returns
+    -------
+    Tuple of FeatureTable[Frequency], FeatureData[Taxonomy], QiitaMetadata,
+        Phylogeny[Rooted]
+
+    Notes
+    -----
+    This method is restricted to 16S V4 data.
+    This method selects only data from the illumina platform.
+    """
 
     if not qiita_study_id.isdigit():
         raise ValueError("ID %s is not a qiita ID" % qiita_study_id)
