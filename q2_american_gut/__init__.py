@@ -7,6 +7,7 @@
 # ----------------------------------------------------------------------------
 from ._version import get_versions
 from ._fetch import fetch_amplicon
+from ._study_summary import summarize_study
 from ._type import QiitaMetadata
 from ._format import QiitaMetadataDirectoryFormat, QiitaMetadataFormat
 
@@ -15,5 +16,5 @@ __version__ = get_versions()['version']
 del get_versions
 
 
-__all__ = ['fetch_amplicon', 'QiitaMetadata',
+__all__ = ['fetch_amplicon', 'summarize_study', 'QiitaMetadata',
            'QiitaMetadataDirectoryFormat', 'QiitaMetadataFormat']
