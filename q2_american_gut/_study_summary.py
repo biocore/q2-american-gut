@@ -7,6 +7,8 @@
 # ----------------------------------------------------------------------------
 
 from q2_american_gut._fetch import fetch_amplicon
+import skbio
+from bloom import remove_seqs, trim_seqs
 
 
 def summarize_study(ctx, qiita_study_id, processing_type, trim_length,
@@ -101,7 +103,7 @@ def summarize_study(ctx, qiita_study_id, processing_type, trim_length,
         unw_unifrac_pcoa, unw_unifrac_emp_plot)
 
 
-def _remove_blooms():
+def _remove_blooms(biom_table, trim_length):
     # 1. Remove blooms
     #   See knightlab-analyses/bloom-analyses repo: see data/newbloom.all.fna:
     #   these are 150 nt sequences identified as sequences associated with
@@ -110,4 +112,22 @@ def _remove_blooms():
     #   NB: Since these are 150 nt, if filtering at 90 nt data, need to trim
     #   bloom sequences to 90 nt so can determine if have exact match
     #   (yes, doing exact match).
-    raise NotImplementedError()
+
+    # TODO: get the location of the file of bloom fasta sequences,
+    # newbloom.all.fna
+    bloom_seqs_fp = None  # Not a real value, won't work
+
+    # below based on https://github.com/knightlab-analyses/bloom-analyses/blob/
+    # master/ipynb/bloom_example.ipynb
+    # Theoretically, I could do this by calling
+    # bloom.filter_seqs_from_biom.main(); however (a) a little bit of
+    # refactoring of that code would be necessary to allow the main method
+    # to take parameters via a code call rather than from sys.argv
+    # (see https://stackoverflow.com/a/14500228) and (b) that method expects
+    # files as its biom inputs and outputs, which may be overkill here as
+    # we already have the stuff in memory.
+
+    bloom_seqs = skbio.read(bloom_seqs_fp, format='fasta')
+    trimmed_bloom_seqs = trim_seqs(bloom_seqs, seqlength=trim_length)
+    bloom_removed_biom_table = remove_seqs(biom_table, trimmed_bloom_seqs)
+    return bloom_removed_biom_table
